@@ -1,28 +1,31 @@
 import { ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className='flex justify-center items-center min-h-screen'>
       <div className='grid grid-cols-2 gap-4'>
         <div
-          className='w-[400px] flex flex-col justify-between p-10 rounded-lg'
+          className='w-[400px] flex flex-col p-10 rounded-lg'
           style={{ backgroundColor: '#F8F9FB' }}
         >
-          <div className='flex flex-col mb-4'>
+          <div className='flex flex-col'>
             <p className='text-lg font-medium'>
               Need help deciding where to go, booking, or itinerary planning?
             </p>
-            <p className='text-gray-600 mt-2 flex items-center'>
+            <Link className='text-gray-600 mt-2 flex items-center' href='/'>
               Talk to our AI
               <ChevronRight />
-            </p>
+            </Link>
           </div>
-          <div className='flex justify-start'>
-            {/* <img
-              src="/path/to/your/first-icon.png" 
+          <div className='flex justify-center'>
+            <Image
+              src="/chat.svg" 
               alt="AI Chat Icon"
-              className="h-10 w-10"
-            /> */}
+              width={120}
+              height={120}
+            />
           </div>
         </div>
 
@@ -33,15 +36,17 @@ export default function Home() {
           >
             <div>
               <p className='text-lg font-medium'>I just want to browse</p>
-              <p className='text-gray-600 mt-2 flex'>
+              <Link className='text-gray-600 mt-2 flex' href='/'>
                 <span>Go to Home</span> <ChevronRight />
-              </p>
+              </Link>
             </div>
-            {/* <img
-              src="/path/to/your/second-icon.png"
-              alt="Browse Icon"
-              className="h-10 w-10"
-            /> */}
+            <Image
+              src="/browse.svg" 
+              alt="AI Chat Icon"
+              className=""
+              width={60}
+              height={60}
+            />
           </div>
 
           <div
@@ -50,15 +55,17 @@ export default function Home() {
           >
             <div>
               <p className='text-lg font-medium'>I want to see my plans</p>
-              <p className='flex text-gray-600 mt-2'>
+              <Link className='flex text-gray-600 mt-2' href='/'>
                 <span> Bookings and itinerary </span> <ChevronRight />
-              </p>
+              </Link>
             </div>
-            {/* <img
-              src="/path/to/your/third-icon.png"
-              alt="Plans Icon"
-              className="h-10 w-10"
-            /> */}
+            <Image
+              src="/calendar.svg" 
+              alt="AI Chat Icon"
+              className=""
+              width={60}
+              height={60}
+            />
           </div>
         </div>
       </div>
