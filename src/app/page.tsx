@@ -14,7 +14,7 @@ export default function Home() {
             <p className='text-lg font-medium'>
               Need help deciding where to go, booking, or itinerary planning?
             </p>
-            <Link className='text-gray-600 mt-2 flex items-center' href='/'>
+            <Link className='text-gray-600 mt-2 flex items-center' href='/chat'>
               Talk to our AI
               <ChevronRight />
             </Link>
