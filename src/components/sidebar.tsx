@@ -6,8 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 const Sidebar = () => {
   const itineraries = [
     { id: '1', name: 'Jeju Island' },
-    { id: '2', name: 'Paris, Barcelona...' }
-    // Add more itineraries here
+    { id: '2', name: 'Paris, Barcelona' }
   ];
 
   return (
