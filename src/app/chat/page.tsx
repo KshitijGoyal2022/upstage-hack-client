@@ -50,9 +50,11 @@ import io from 'socket.io-client';
 
 interface Message {
   text: string;
-  sender: string | null;
-  timestamp: string;
-  username: string | null;
+	// itinerary: IItinerary;
+	creator: string | null;
+
+	createdAt: string;
+	// updatedAt: string;
 }
 
 const socket = io(process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5001');
@@ -89,9 +91,8 @@ export default function Dashboard() {
     if (message.trim() && socketId) {
       const newMessage: Message = {
         text: message,
-        sender: socketId,
-        timestamp: new Date().toLocaleTimeString(),
-        username: socketId,
+        creator: socketId,
+        createdAt: new Date().toLocaleTimeString(),
       };
 
       socket.emit('message', newMessage);
@@ -251,19 +252,19 @@ export default function Dashboard() {
                 <div
                   key={index}
                   className={`flex ${
-                    msg.sender === socketId ? 'justify-end' : 'justify-start'
+                    msg.creator === socketId ? 'justify-end' : 'justify-start'
                   }`}
                 >
                   <div
                     className={`max-w-xs p-3 rounded-t-lg ${
-                      msg.sender === socketId
+                      msg.creator === socketId
                         ? 'rounded-bl-lg bg-gray-800 text-white'
                         : 'rounded-br-lg bg-white text-gray-800 shadow-md'
                     }`}
                   >
                     <p className='text-sm'>{msg.text}</p>
                     <span className='block mt-1 text-xs text-gray-500'>
-                      {msg.username} ● {msg.timestamp}
+                      {msg.creator} ● {msg.createdAt}
                     </span>
                   </div>
                 </div>
