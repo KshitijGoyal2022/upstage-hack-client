@@ -57,7 +57,7 @@ const Itinerary = ({ params }: any) => {
 
       {/* Chat Component */}
       <div className='col-span-3 border-l'>
-        <Chat />
+        <Chat itineraryId={id} />
       </div>
     </div>
   );

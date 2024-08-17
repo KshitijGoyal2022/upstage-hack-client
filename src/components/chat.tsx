@@ -52,8 +52,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface Message {
   text: string;
-  // itinerary: IItinerary;
-  creator: string | null;
+  itinerary: string; //going to pass the itinerary id
+  creator: string | null; //going to pass the user id
 
   createdAt: string;
   // updatedAt: string;
@@ -63,7 +63,10 @@ const socket = io(
   process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:5001'
 );
 
-export default function Chat() {
+interface ChatProps {
+  itineraryId: string;
+}
+export default function Chat({itineraryId}: ChatProps) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState('');
@@ -93,6 +96,7 @@ export default function Chat() {
     if (message.trim() && user?.sub) {
       const newMessage: Message = {
         text: message,
+        itinerary: itineraryId, //going to pass the itinerary id
         creator: user.sub,
         createdAt: new Date().toLocaleTimeString(),
       };
@@ -102,14 +106,6 @@ export default function Chat() {
     }
   };
 
-  // Show a loading indicator until the socket connection is established
-  if (isLoading || !isConnected) {
-    return (
-      <div className='flex items-center justify-center h-screen'>
-        <p>Connecting to the chat...</p>
-      </div>
-    );
-  }
 
   return (
     <div className='grid h-screen w-full'>
