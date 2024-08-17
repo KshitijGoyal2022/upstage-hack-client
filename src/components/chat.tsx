@@ -1,49 +1,10 @@
 'use client';
-import {
-  Bird,
-  Book,
-  Bot,
-  Code2,
-  CornerDownLeft,
-  LifeBuoy,
-  Mic,
-  Paperclip,
-  Rabbit,
-  Settings,
-  Settings2,
-  Share,
-  SquareTerminal,
-  SquareUser,
-  Triangle,
-  Turtle,
-} from 'lucide-react';
+import { CornerDownLeft } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer';
-import { Input } from '@/components/ui/input';
+
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from '@/components/ui/tooltip';
 import { useEffect, useState } from 'react';
 
 import io from 'socket.io-client';
@@ -52,11 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface Message {
   text: string;
-  itinerary: string; //going to pass the itinerary id
-  creator: string | null; //going to pass the user id
-
-  createdAt: string;
-  // updatedAt: string;
+  itinerary: string;
+  creator: string | null;
 }
 
 const socket = io(
@@ -66,46 +24,76 @@ const socket = io(
 interface ChatProps {
   itineraryId: string;
 }
-export default function Chat({itineraryId}: ChatProps) {
+export default function Chat({ itineraryId }: ChatProps) {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    // Listen for connection event
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/messages/messages/${itineraryId}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setMessages(data);
+        } else {
+          console.error('Failed to fetch messages', response.statusText);
+        }
+      } catch (error) {
+        console.error('Failed to fetch messages', error);
+      }
+    };
+
+    fetchMessages();
+
     socket.on('connect', () => {
       setIsConnected(true);
     });
 
-    // Listen for messages
     socket.on('message', (newMessage: Message) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
-    // Clean up event listeners on component unmount
     return () => {
       socket.off('connect');
       socket.off('message');
     };
-  }, []);
+  }, [itineraryId]);
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
 
     if (message.trim() && user?.sub) {
       const newMessage: Message = {
         text: message,
-        itinerary: itineraryId, //going to pass the itinerary id
+        itinerary: itineraryId,
         creator: user.sub,
-        createdAt: new Date().toLocaleTimeString(),
       };
 
-      socket.emit('message', newMessage);
-      setMessage(''); // Clear the input after submission
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/messages/messages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newMessage),
+        });
+
+        if (response.ok) {
+          const savedMessage = await response.json();
+          socket.emit('message', savedMessage);
+          setMessage('');
+        } else {
+          console.error('Failed to send message', response.statusText);
+        }
+      } catch (error) {
+        console.error('Failed to send message', error);
+      }
     }
   };
-
 
   return (
     <div className='grid h-screen w-full'>
@@ -135,7 +123,8 @@ export default function Chat({itineraryId}: ChatProps) {
                   >
                     <p className='text-sm'>{msg.text}</p>
                     <span className='block mt-1 text-xs text-gray-500'>
-                      {msg.createdAt}
+                      {msg.creator.name} •{' '}
+                      {new Date(msg.createdAt).toLocaleTimeString()}
                     </span>
                   </div>
                 </div>

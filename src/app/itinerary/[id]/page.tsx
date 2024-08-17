@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import Chat from '@/components/chat';
 import Sidebar from '@/components/sidebar';
+import Image from 'next/image';
 
 const Itinerary = ({ params }: any) => {
   const { id } = params;
@@ -25,10 +26,12 @@ const Itinerary = ({ params }: any) => {
           <div className='mt-4'>
             <div className='relative h-64'>
               {/* Replace with the Map component */}
-              <img
-                src='/path-to-map.png'
+              <Image
+                src='/Europe-Political-Map.jpg'
                 alt='Map'
                 className='w-full h-full object-cover'
+                width={500}
+                height={500}
               />
             </div>
             <div className='mt-6'>

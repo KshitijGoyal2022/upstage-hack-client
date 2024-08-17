@@ -4,6 +4,9 @@ import './globals.css';
 
 import AuthProvider from '@/components/AuthProvider';
 import Navbar from '@/components/navbar';
+import { useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import Auth from '@/components/Auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,9 +24,10 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <AuthProvider>
+          <Auth />
           <Navbar />
           {children}
-          </AuthProvider>
+        </AuthProvider>
       </body>
     </html>
   );
