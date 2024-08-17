@@ -15,6 +15,7 @@ interface Message {
   text: string;
   itinerary: string;
   creator: string | null;
+  googleId: string;
 }
 
 const socket = io(
@@ -39,6 +40,7 @@ export default function Chat({ itineraryId }: ChatProps) {
         if (response.ok) {
           const data = await response.json();
           setMessages(data);
+          console.log(messages);
         } else {
           console.error('Failed to fetch messages', response.statusText);
         }
@@ -71,16 +73,20 @@ export default function Chat({ itineraryId }: ChatProps) {
         text: message,
         itinerary: itineraryId,
         creator: user.sub,
+        googleId: user.sub,
       };
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/messages/messages`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newMessage),
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/messages/messages`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newMessage),
+          }
+        );
 
         if (response.ok) {
           const savedMessage = await response.json();
@@ -96,37 +102,45 @@ export default function Chat({ itineraryId }: ChatProps) {
   };
 
   return (
-    <div className='grid h-screen w-full'>
-      <div className='flex flex-col'>
+    <div className='grid w-full '>
+      <div className='flex flex-col h-full'>
         <main className='flex-1 gap-4 overflow-auto p-4'>
           <div className='relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2'>
             {/* Output Area */}
-            <div className='flex-1 p-4 space-y-4 overflow-y-auto'>
+            <div className='flex-1 p-4 space-y-4 h-[100px] overflow-y-auto'>
               {messages.map((msg, index) => (
                 <div
                   key={index}
                   className={`flex ${
-                    msg.creator === user?.sub ? 'justify-end' : 'justify-start'
-                  }`}
+                    msg.googleId === user?.sub ? 'justify-end' : 'justify-start'
+                  } items-center`}
                 >
-                  {/* <Avatar>
-                    <AvatarImage src={user.picture} alt={user.name} />
-                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                  </Avatar> */}
+      
+                  {msg.googleId !== user?.sub && (
+                    <Avatar className='mr-2 '>
+                      <AvatarImage src={msg.creator.image} alt={user?.name} className='' />
+                      <AvatarFallback>{msg.creator?.name}</AvatarFallback>
+                    </Avatar>
+                  )}
 
                   <div
                     className={`max-w-xs p-3 rounded-t-lg ${
-                      msg.creator === user?.sub
+                      msg.googleId === user?.sub
                         ? 'rounded-bl-lg bg-gray-800 text-white'
                         : 'rounded-br-lg bg-white text-gray-800 shadow-md'
                     }`}
                   >
                     <p className='text-sm'>{msg.text}</p>
                     <span className='block mt-1 text-xs text-gray-500'>
-                      {msg.creator.name} •{' '}
                       {new Date(msg.createdAt).toLocaleTimeString()}
                     </span>
                   </div>
+                  {msg.googleId === user?.sub && (
+                    <Avatar className='ml-2'>
+                      <AvatarImage src={user.picture} alt={user.name} />
+                      <AvatarFallback>{user.name?.[0]}</AvatarFallback>
+                    </Avatar>
+                  )}
                 </div>
               ))}
             </div>
