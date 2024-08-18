@@ -111,3 +111,57 @@ export const addNewMemberToItinerary = async (
 
 	return response.data;
 };
+
+export type TravelerInfo = {
+	dateOfBirth: string;
+	name: {
+		firstName: string;
+		lastName: string;
+	};
+	gender: "MALE" | "FEMALE";
+	contact: {
+		emailAddress: string;
+		phones: {
+			deviceType: "MOBILE";
+			countryCallingCode: string;
+			number: string;
+		}[];
+	};
+	documents: {
+		documentType: "PASSPORT" | "ID_CARD" | "VISA" | "OTHER";
+		birthPlace: string;
+		issuanceLocation: string;
+		issuanceDate: string;
+		number: string;
+		expiryDate: string;
+		issuanceCountry: string;
+		validityCountry: string;
+		nationality: string;
+		holder: boolean;
+	}[];
+};
+
+export const updateTravelerInfo = async (
+	ItineraryId: string,
+	userId: string,
+	travelerInfo: TravelerInfo
+) => {
+	const response = await axios.put(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${ItineraryId}/user/${userId}`,
+		{
+			travelerInfo,
+		}
+	);
+
+	return response.data;
+};
+
+export const confirmPricing = async (itineraryId: string) => {
+	const response = await axios.post(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/confirm-pricing`
+	);
+
+	return response.data;
+};
+
+export const bookItinerary = async (itineraryId: string) => {};
