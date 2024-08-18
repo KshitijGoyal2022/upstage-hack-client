@@ -1,3 +1,12 @@
+# Combined Repository
+
+This repository contains two submodules:
+
+- [Server/API](https://github.com/shardaishwak/upstage-hack-api): Click here to go directly to the First Project repository to the API.
+- [Client NextJS](https://github.com/KshitijGoyal2022/upstage-hack-client): Click here to go directly to the Second Project repository to the Client.
+
+---
+
 # Traventure
 
 **Traventure** is a state-of-the-art travel application designed to revolutionize how you plan, book, and manage your trips. Whether you're traveling solo or with a group, Traventure provides an all-in-one platform for creating and managing detailed itineraries, booking accommodations and flights, and even handling communication in multiple languages. Leveraging AI-powered assistance and advanced APIs, Traventure simplifies every aspect of your travel experience, allowing you to focus on the journey itself.
@@ -10,6 +19,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
+- [Architecture](#architecture)
 
 ## Features
 
@@ -19,7 +29,7 @@
 - **Passport Information Extraction:** Use OCR technology to extract and autofill passport details, speeding up the booking process.
 - **AI-Powered Travel Assistance:** Engage with AI to receive tailored recommendations for flights, accommodations, and tourist attractions.
 - **Multi-language Translation:** Real-time translation between English and Korean to assist with communication during your travels.
-- **Interactive Maps:** Discover places to visit using Mapbox-powered interactive maps.
+- **Interactive Maps:** Discover places to visit, hotels, restaurants, and entertainment using Mapbox-powered interactive maps.
 - **Real-time Group Communication:** Users can create groups for itineraries and communicate with each other live using **Socket.io**, making trip planning collaborative and more efficient.
 - **Seamless Integration:** Connects with multiple APIs, including Amadeus for flight information, Mapbox for place recommendations, and more.
 
@@ -31,8 +41,8 @@ To get started with Traventure, follow the instructions below.
 
 Ensure you have the following installed:
 
-- Node.js (v14.x or higher)
-- Yarn (v1.x or higher)
+- Node.js 
+- Yarn 
 - A MongoDB instance (local or cloud)
 
 ### Tech Stack
@@ -54,7 +64,7 @@ Ensure you have the following installed:
     - **Document OCR API:** Extracts passport and other travel document details to facilitate booking processes.
     - **Translation API:** Provides real-time translation between English and Korean.
   - **Amadeus Travel APIs:** Integrates flight search and booking functionalities.
-  - **Mapbox API:** Powers the interactive maps for place recommendations and navigation.
+  - **Mapbox API:** Powers the interactive maps for place recommendations, hotels, restaurants, entertainment, and more.
 - **Other:**
   - Multer for file uploads
   - Axios for making HTTP requests
@@ -64,23 +74,29 @@ Ensure you have the following installed:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/traventure.git
-cd traventure
+git clone https://github.com/shardaishwak/upstage-hack-api.git
+git clone https://github.com/KshitijGoyal2022/upstage-hack-client.git
+cd upstage-hack-api
+cd upstage-hack client
 ```
 
-### Install Dependencies
+### Install Dependencies and Run the Client
 
 ```bash
-yarn install
-```
-
-### Run the Application
-
-```bash
+cd client
+yarn
 yarn dev
 ```
 
-Your application should now be running on `http://localhost:3000`.
+### Install Dependencies and Run the API
+
+```bash
+cd api
+yarn
+yarn dev
+```
+
+Your client application should now be running on `http://localhost:3000`, and your API server should be running on `http://localhost:5001`.
 
 ## Usage
 
@@ -116,7 +132,20 @@ Your application should now be running on `http://localhost:3000`.
 
 ### Interactive Maps
 
-- **Explore with Mapbox:** Discover and explore places to visit using Mapbox-powered interactive maps integrated directly into the app.
+- **Explore with Mapbox:** Discover and explore places to visit, hotels, restaurants, and entertainment using Mapbox-powered interactive maps integrated directly into the app.
+
+  - **Place Recommendations:** Utilize Mapbox’s extensive geolocation data to find and explore nearby places of interest, including tourist attractions, restaurants, and entertainment venues.
+  - **Hotel Search:** Search for and view hotels in your destination area with Mapbox’s detailed map features, including filters for price range, star ratings, and user reviews.
+  - **Route Planning:** Plan your routes within the city, whether by foot, car, or public transportation, with Mapbox’s interactive mapping and direction services.
+
+### Flight Search and Booking with Amadeus
+
+- **Flight Search:** Seamlessly search for flights using the Amadeus Travel APIs, which provide comprehensive flight options based on your criteria such as destination, departure date, and number of passengers.
+  
+  - **Filtering Options:** Narrow down your search by airline, flight duration, number of stops, and price range.
+  - **Real-Time Availability:** Get real-time flight availability and pricing to make informed booking decisions.
+
+- **Booking Integration:** Directly book your selected flights through the application, with integration to Amadeus’s booking API, ensuring that your booking is secure and confirmed.
 
 ## API Endpoints
 
@@ -131,7 +160,7 @@ Your application should now be running on `http://localhost:3000`.
   - **Functionality:** Connects chat interactions with backend services to pull up-to-date travel data.
 
 - **Document OCR API**
-  - **POST /ocr**
+
     - **Description:** Upload a travel document (passport, ID card, visa) for OCR processing.
     - **Functionality:** Extracts and returns relevant details such as passport number, issuance country, and more.
 
@@ -139,5 +168,9 @@ Your application should now be running on `http://localhost:3000`.
   - **Description:** Facilitates real-time translation between English and Korean.
   - **Functionality:** Supports travelers by breaking down language barriers.
 
+## Architecture
 
----
+![Architecture Diagram](./public/architecture.svg)
+
+For more detailed architecture planning and collaboration, visit our planning on [Excalidraw](https://excalidraw.com/#json=93V_lfHaprhUdDNqZ7hDo,bnOxTCY-qhXxyI7t2NkL_g).
+
