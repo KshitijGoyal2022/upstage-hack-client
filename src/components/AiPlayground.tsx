@@ -76,7 +76,7 @@ export default function AiPlayground(props: {
 		),
 		...props.itinerary.hotels.map((hotel) => hotel?.properties?.mapbox_id),
 	]);
-	const flightId = generateFlightOfferUniqueId(props.itinerary.flight);
+	const flightId = generateFlightOfferUniqueId(props?.itinerary?.flight);
 
 	console.log(props.itinerary?.admin?.provider?.id === user?.sub);
 
