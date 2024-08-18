@@ -1,7 +1,8 @@
 "use client";
 
-import { confirmPricing } from "@/apis";
+import { bookItinerary, checkIfAllTravelersInfo, confirmPricing } from "@/apis";
 import { FlightCard } from "@/components/renders/RenderFlights";
+import { Button } from "@/components/ui/button";
 import { useItinerary } from "@/useItinerary";
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
@@ -75,12 +76,29 @@ function PricingPage({ params }: { params: any }) {
 	const [loadingPricing, setLoadingPricing] = React.useState(false);
 	const [pricing, setPricing] = React.useState<any>();
 
+	const [check, setCheck] = React.useState([]);
+
 	const callbackPricing = async () => {
 		setLoadingPricing(true);
 		const pricing = await confirmPricing(id);
 		setLoadingPricing(false);
 		setPricing(pricing);
 		console.log(pricing);
+	};
+
+	const callbackCheck = async () => {
+		const result = await checkIfAllTravelersInfo(id);
+		setCheck(result);
+		return result;
+	};
+
+	const callbackBook = async () => {
+		const result = await callbackCheck();
+		if (result.length > 0) {
+			alert("Please fill in all the traveler information");
+			return;
+		}
+		bookItinerary(id);
 	};
 
 	React.useEffect(() => {
@@ -146,24 +164,39 @@ function PricingPage({ params }: { params: any }) {
 	const isAdmin = itinerary?.admin?.provider?.id === user?.sub;
 
 	return (
-		<div className="flex flex-row  m-12 gap-8">
-			{pricing?.flightOffers?.[0] && (
+		<div className="m-12">
+			<Button onClick={callbackBook} disabled={!isAdmin}>
+				{!isAdmin ? "Only admin can create a booking" : "Book Flight"}
+			</Button>
+			{check.length > 0 && (
 				<div>
-					<FlightCard
-						flight={pricing?.flightOffers?.[0]}
-						isAdmin={isAdmin}
-						isSelected
-					/>
+					<h2 className="text-2xl font-semibold mb-4">Errors</h2>
+					{check.map((error) => (
+						<p key={error} className="text-red-600">
+							{error}
+						</p>
+					))}
 				</div>
 			)}
-			{pricing?.flightOffers?.[0]?.price && (
-				<div>
-					<h2 className="text-2xl font-semibold mb-4">Your Pricing</h2>
-					<RenderPricing
-						price={pricing?.flightOffers?.[0]?.travelerPricings?.[0]?.price}
-					/>
-				</div>
-			)}
+			<div className="flex flex-row gap-8 mt-4">
+				{pricing?.flightOffers?.[0] && (
+					<div>
+						<FlightCard
+							flight={pricing?.flightOffers?.[0]}
+							isAdmin={isAdmin}
+							isSelected
+						/>
+					</div>
+				)}
+				{pricing?.flightOffers?.[0]?.price && (
+					<div>
+						<h2 className="text-2xl font-semibold mb-4">Your Pricing</h2>
+						<RenderPricing
+							price={pricing?.flightOffers?.[0]?.travelerPricings?.[0]?.price}
+						/>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
