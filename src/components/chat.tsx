@@ -32,6 +32,10 @@ export default function Chat({ itineraryId }: ChatProps) {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
+    if (isAuthenticated && user) {
+      // Now user data should be fully available here
+    }
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(
@@ -63,7 +67,7 @@ export default function Chat({ itineraryId }: ChatProps) {
       socket.off('connect');
       socket.off('message');
     };
-  }, [itineraryId]);
+  }, [itineraryId, isAuthenticated, user]);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -101,80 +105,84 @@ export default function Chat({ itineraryId }: ChatProps) {
     }
   };
 
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      handleSubmit(event);
+    }
+  };
+
+
   return (
-    <div className='grid w-full '>
-      <div className='flex flex-col h-full'>
-        <main className='flex-1 gap-4 overflow-auto p-4'>
-          <div className='relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2'>
-            {/* Output Area */}
-            <div className='flex-1 p-4 space-y-4 h-[100px] overflow-y-auto'>
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    msg.googleId === user?.sub ? 'justify-end' : 'justify-start'
-                  } items-center`}
-                >
-      
-                  {msg.googleId !== user?.sub && (
-                    <Avatar className='mr-2 '>
-                      <AvatarImage src={msg.creator.image} alt={user?.name} className='' />
-                      <AvatarFallback>{msg.creator?.name}</AvatarFallback>
-                    </Avatar>
-                  )}
+    <div className='flex flex-col rounded-xl bg-muted/50 lg:col-span-2 p-4'>
+      <div className='flex-1 min-h-[650px] max-h-[650px] overflow-y-auto p-3'>
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex items-center p-2 ${
+              msg.googleId === user?.sub ? 'justify-end' : 'justify-start'
+            } `}
+          >
+            {msg.googleId !== user?.sub  && (
+              <Avatar className='mr-2'>
+                <AvatarImage
+                  src={msg.creator?.image || ''}
+                  alt={msg.creator?.name || 'User'}
+                  className=''
+                />
+                <AvatarFallback>{msg.creator?.name?.[0] || '?'}</AvatarFallback>
+              </Avatar>
+            )}
 
-                  <div
-                    className={`max-w-xs p-3 rounded-t-lg ${
-                      msg.googleId === user?.sub
-                        ? 'rounded-bl-lg bg-gray-800 text-white'
-                        : 'rounded-br-lg bg-white text-gray-800 shadow-md'
-                    }`}
-                  >
-                    <p className='text-sm'>{msg.text}</p>
-                    <span className='block mt-1 text-xs text-gray-500'>
-                      {new Date(msg.createdAt).toLocaleTimeString()}
-                    </span>
-                  </div>
-                  {msg.googleId === user?.sub && (
-                    <Avatar className='ml-2'>
-                      <AvatarImage src={user.picture} alt={user.name} />
-                      <AvatarFallback>{user.name?.[0]}</AvatarFallback>
-                    </Avatar>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Typing Indicator */}
-            <div className='px-4 pb-2 text-sm text-gray-500'>
-              {message && <span>{user?.name} is typing...</span>}
-            </div>
-
-            <form
-              className='relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring'
-              x-chunk='dashboard-03-chunk-1'
-              onSubmit={handleSubmit}
+            <div
+              className={`max-w-xs p-3 rounded-t-lg ${
+                msg.googleId === user?.sub
+                  ? 'rounded-bl-lg bg-gray-800 text-white'
+                  : 'rounded-br-lg bg-white text-gray-800 shadow-md'
+              }`}
             >
-              <Label htmlFor='message' className='sr-only'>
-                Message
-              </Label>
-              <Textarea
-                id='message'
-                placeholder='Type your message here...'
-                className='min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0'
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <div className='flex items-center p-3 pt-0'>
-                <Button type='submit' size='sm' className='ml-auto gap-1.5'>
-                  Send Message
-                  <CornerDownLeft className='size-3.5' />
-                </Button>
-              </div>
-            </form>
+              <p className='text-sm'>{msg.text}</p>
+              <span className='block mt-1 text-xs text-gray-500'>
+                {new Date(msg.createdAt).toLocaleTimeString()}
+              </span>
+            </div>
+            {msg.googleId === user?.sub && user && (
+              <Avatar className='ml-2'>
+                <AvatarImage src={user.picture || ''} alt={user.name || 'You'} />
+                <AvatarFallback>{user.name?.[0] || '?'}</AvatarFallback>
+              </Avatar>
+            )}
           </div>
-        </main>
+        ))}
       </div>
+
+      {/* Typing Indicator */}
+      <div className='px-4 pb-2 text-sm text-gray-500'>
+        {message && <span>{user?.name} is typing...</span>}
+      </div>
+
+      <form
+        className='relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring'
+        onSubmit={handleSubmit}
+      >
+        <Label htmlFor='message' className='sr-only'>
+          Message
+        </Label>
+        <Textarea
+          id='message'
+          placeholder='Type your message here...'
+          className='min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0'
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <div className='flex items-center p-3 pt-0'>
+          <Button type='submit' size='sm' className='ml-auto gap-1.5'>
+            Send Message
+            <CornerDownLeft className='size-3.5' />
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

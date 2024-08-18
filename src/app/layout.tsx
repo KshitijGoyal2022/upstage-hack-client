@@ -11,7 +11,7 @@ import Auth from '@/components/Auth';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Travel Application',
+  title: 'Traventure',
   description: 'Ready, set, go anywhere!',
 };
 

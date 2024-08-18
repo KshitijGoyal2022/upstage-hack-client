@@ -49,7 +49,7 @@ export default function Home() {
               <p className='text-lg font-medium'>I want to see my existing itinerary and bookings </p>
               <Link
                 className='text-gray-600 mt-2 flex items-center'
-                href='/itinerary/1'
+                href='/itinerary/66c1655b48bb8abd73b8b840'
               >
                 Go to Profile
                 <ChevronRight />

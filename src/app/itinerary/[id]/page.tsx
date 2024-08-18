@@ -19,10 +19,7 @@ const Itinerary = ({ params }: any) => {
       {/* Main Content - Itinerary Details */}
       <div className='col-span-7 p-6'>
         <div className='flex flex-col'>
-          <div className='flex items-center justify-between'>
-            <h1 className='text-2xl font-semibold'>Day {id}</h1>
-            <button className='text-sm text-blue-500'>Edit</button>
-          </div>
+
           <div className='mt-4'>
             <div className='relative h-64'>
               {/* Replace with the Map component */}
