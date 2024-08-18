@@ -104,6 +104,10 @@ function PricingPage({ params }: { params: any }) {
 		}
 		setLoadingBook(true);
 		const booking = bookItinerary(id);
+		const bookingId = booking?.booking?.referenceId;
+		if (bookingId) {
+			window.location.href = `/booking/${bookingId}`;
+		}
 		setLoadingBook(false);
 	};
 
@@ -171,8 +175,12 @@ function PricingPage({ params }: { params: any }) {
 
 	return (
 		<div className="m-12">
-			<Button onClick={callbackBook} disabled={!isAdmin}>
-				{!isAdmin ? "Only admin can create a booking" : "Book Flight"}
+			<Button onClick={callbackBook} disabled={!isAdmin || loadingBook}>
+				{loadingBook
+					? "Booking..."
+					: !isAdmin
+					? "Only admin can create a booking"
+					: "Book Flight"}
 			</Button>
 			{check.length > 0 && (
 				<div>
