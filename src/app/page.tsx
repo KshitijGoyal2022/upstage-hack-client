@@ -1,8 +1,5 @@
 'use client';
 
-import LoginButton from '@/components/login';
-import LogoutButton from '@/components/logout';
-import Navbar from '@/components/navbar';
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +7,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div>
-      <div className='flex justify-center items-center min-h-screen p-4'>
+      <div className='flex justify-center items-center mt-40 p-4'>
         <div className='grid sm:grid-cols-1 md:grid-cols-2 gap-4'>
           <div
             className='w-full md:w-[400px] flex flex-col p-6 md:p-10 rounded-lg'
@@ -49,7 +46,7 @@ export default function Home() {
               <p className='text-lg font-medium'>I want to see my existing itinerary and bookings </p>
               <Link
                 className='text-gray-600 mt-2 flex items-center'
-                href='/itinerary/1'
+                href='/itinerary/66c1655b48bb8abd73b8b840'
               >
                 Go to Profile
                 <ChevronRight />

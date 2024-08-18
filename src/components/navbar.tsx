@@ -11,14 +11,15 @@ export default function Navbar() {
   return (
     <div className='bg-white shadow p-4 flex justify-between'>
       <div>
-        <Link href='/'>
+        <Link href='/' className='flex items-center'>
           <Image
-            src='/logo.webp'
+            src='/logo.png'
             alt='Travel Application Logo'
-            width={40}
-            height={40}
+            width={60}
+            height={60}
             className='rounded-full'
           />
+          <h1 className='font-bold text-2xl '>Traventure</h1>
         </Link>
       </div>
       <div>
