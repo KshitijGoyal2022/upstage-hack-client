@@ -1,4 +1,3 @@
-
 # Traventure
 
 **Traventure** is a state-of-the-art travel application designed to revolutionize how you plan, book, and manage your trips. Whether you're traveling solo or with a group, Traventure provides an all-in-one platform for creating and managing detailed itineraries, booking accommodations and flights, and even handling communication in multiple languages. Leveraging AI-powered assistance and advanced APIs, Traventure simplifies every aspect of your travel experience, allowing you to focus on the journey itself.
@@ -66,27 +65,25 @@ Ensure you have the following installed:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/traventure.git
-cd traventure
+git clone https://github.com/shardaishwak/upstage-hack-api.git
+git clone https://github.com/KshitijGoyal2022/upstage-hack-client.git
+cd upstage-hack-api
+cd upstage-hack client
 ```
 
-### Install Dependencies
-
-```bash
-yarn
-```
-
-### Run the Client
+### Install Dependencies and Run the Client
 
 ```bash
 cd client
+yarn
 yarn dev
 ```
 
-### Run the API
+### Install Dependencies and Run the API
 
 ```bash
 cd api
+yarn
 yarn dev
 ```
 
