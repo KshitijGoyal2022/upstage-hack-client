@@ -1,5 +1,6 @@
 "use client";
 
+import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { FlightOffer$1 } from "@/types/amadeus";
 import { PointsOfInterest } from "@/types/mapbox";
 /**
@@ -43,7 +44,12 @@ export const useChat = (socket: Socket) => {
 	);
 
 	return React.useMemo(
-		() => ({ chats, sendChat, isLoading, toolLoading }),
+		() => ({
+			chats,
+			sendChat,
+			isLoading,
+			toolLoading,
+		}),
 		[chats, sendChat, isLoading, toolLoading]
 	);
 };

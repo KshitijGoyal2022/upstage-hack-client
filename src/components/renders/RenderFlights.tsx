@@ -21,6 +21,8 @@ export function FlightCard({
 	className?: string;
 	flight: AmadeusFlightOffer;
 	onPress: () => void;
+	isAdmin?: boolean;
+	isSelected?: boolean;
 }) {
 	const from = props.flight.itineraries?.[0].segments?.[0].departure?.iataCode;
 	const to =
@@ -115,7 +117,10 @@ export function FlightCard({
 														{details?.amenities
 															?.filter((e) => !e?.isChargeable)
 															.map((amenity) => (
-																<p className="text-sm text-muted-foreground">
+																<p
+																	className="text-sm text-muted-foreground"
+																	key={amenity?.description}
+																>
 																	{amenity?.description}:{" "}
 																	{amenity?.isChargeable ? "No" : "Yes"}
 																</p>
@@ -158,14 +163,20 @@ export function FlightCard({
 				))}
 			</div>
 
-			<CardFooter className="flex-col">
-				<p className="mb-6">
-					{props.flight.price?.grandTotal} {props.flight.price?.currency}
-				</p>
-				<Button onClick={props.onPress} className="w-full">
-					Choose Flight
-				</Button>
-			</CardFooter>
+			{props?.isAdmin && (
+				<CardFooter className="flex-col">
+					<p className="mb-6">
+						{props.flight.price?.grandTotal} {props.flight.price?.currency}
+					</p>
+					<Button
+						disabled={props.isSelected}
+						onClick={props.onPress}
+						className="w-full"
+					>
+						{props.isSelected ? "Selected" : "Choose Flight"}
+					</Button>
+				</CardFooter>
+			)}
 		</Card>
 	);
 }

@@ -6,7 +6,7 @@ export const saveFlight = async (
 	itineraryId: string
 ) => {
 	const response = await axios.post(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/flights`,
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/flight`,
 		{
 			flight,
 		}

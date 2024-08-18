@@ -28,6 +28,7 @@ const notifications = [
 
 type CardProps = {
 	hotel: AmadeusHotelOffer;
+	isAdmin?: boolean;
 };
 
 export function HotelCard(props: CardProps) {
@@ -38,9 +39,11 @@ export function HotelCard(props: CardProps) {
 				<CardDescription>{props.hotel.address.countryCode}</CardDescription>
 			</CardHeader>
 
-			<CardFooter>
-				<Button className="w-full">Get more details</Button>
-			</CardFooter>
+			{props.isAdmin && (
+				<CardFooter>
+					<Button className="w-full">Get more details</Button>
+				</CardFooter>
+			)}
 		</Card>
 	);
 }
