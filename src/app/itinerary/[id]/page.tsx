@@ -68,7 +68,7 @@ const Itinerary = ({ params }: any) => {
 			<div className="col-span-12 flex justify-end items-center p-6 border-b bg-white sticky top-0 z-10 border-t">
 				<div className="flex space-x-4">
 					<ShareModal shareLink={shareLink} />
-					<Link href={`${id}/book`} passHref>
+					<Link href={`${id}/book-info`} passHref>
 						<Button className="w-40">Book</Button>
 					</Link>
 					<Link href={`${id}/preview`} passHref>

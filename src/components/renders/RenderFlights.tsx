@@ -57,7 +57,8 @@ export function FlightCard({
 								}
 							</CardTitle>
 							<CardDescription>
-								{convertISODurationToTime(itinerary.duration)}
+								{itinerary?.duration &&
+									convertISODurationToTime(itinerary?.duration)}
 							</CardDescription>
 						</CardHeader>
 						<CardContent className="grid gap-4">
