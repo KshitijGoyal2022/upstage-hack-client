@@ -14,41 +14,43 @@ export default function RenderPOIMap(props: RenderPOIMapProps) {
 
 	return (
 		<div className="p-6">
-			<MapContainer
-				center={{
-					lng: props.activities[0].geometry.coordinates[0],
-					lat: props.activities[0].geometry.coordinates[1],
-				}}
-				style={{
-					width: "100%",
-					height: "400px",
-					borderRadius: 8,
-					zIndex: 0,
-				}}
-				zoom={zoom}
-				scrollWheelZoom={false}
-			>
-				<TileLayer
-					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-				/>
-				{props.activities.map((activity) => {
-					return (
-						<Marker
-							key={activity.properties.mapbox_id}
-							position={{
-								lat: activity.geometry.coordinates[1],
-								lng: activity.geometry.coordinates[0],
-							}}
-						>
-							<Popup>
-								{activity.properties.name} <br />{" "}
-								{activity.properties.full_address}
-							</Popup>
-						</Marker>
-					);
-				})}
-			</MapContainer>
+			{props.activities?.[0] && (
+				<MapContainer
+					center={{
+						lng: props.activities[0].geometry.coordinates[0],
+						lat: props.activities[0].geometry.coordinates[1],
+					}}
+					style={{
+						width: "100%",
+						height: "400px",
+						borderRadius: 8,
+						zIndex: 0,
+					}}
+					zoom={zoom}
+					scrollWheelZoom={false}
+				>
+					<TileLayer
+						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+					/>
+					{props.activities.map((activity) => {
+						return (
+							<Marker
+								key={activity.properties.mapbox_id}
+								position={{
+									lat: activity.geometry.coordinates[1],
+									lng: activity.geometry.coordinates[0],
+								}}
+							>
+								<Popup>
+									{activity.properties.name} <br />{" "}
+									{activity.properties.full_address}
+								</Popup>
+							</Marker>
+						);
+					})}
+				</MapContainer>
+			)}
 		</div>
 	);
 }

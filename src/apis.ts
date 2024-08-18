@@ -78,9 +78,25 @@ export const getItinerary = async (itineraryId: string) => {
 	return response.data;
 };
 
+export const getBooking = async (bookingId: string) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/bookings/${bookingId}`
+	);
+
+	return response.data;
+};
+
 export const getUserItineraries = async (userId: string) => {
 	const response = await axios.get(
 		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/user/${userId}`
+	);
+
+	return response.data;
+};
+
+export const getUserBookings = async (userId: string) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/bookings/user/${userId}`
 	);
 
 	return response.data;
