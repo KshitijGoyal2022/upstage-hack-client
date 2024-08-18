@@ -31,3 +31,25 @@ export function convertISODurationToTime(isoDuration: string) {
 		.padStart(2, "0")}m`;
 	return formattedTime;
 }
+
+export function millisecondsToDuration(milliseconds: number) {
+	// Convert milliseconds to total seconds
+	const totalSeconds = Math.floor(milliseconds / 1000);
+
+	// Calculate hours
+	const hours = Math.floor(totalSeconds / 3600);
+
+	// Calculate remaining minutes
+	const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+	// Calculate remaining seconds
+	const seconds = totalSeconds % 60;
+
+	// Format the hours, minutes, and seconds to always have two digits
+	const formattedHours = String(hours).padStart(2, "0");
+	const formattedMinutes = String(minutes).padStart(2, "0");
+	const formattedSeconds = String(seconds).padStart(2, "0");
+
+	// Combine them into the HH:MM:SS format
+	return `${formattedHours}h ${formattedMinutes}min`;
+}
