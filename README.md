@@ -17,12 +17,12 @@
 - **User Authentication:** Secure and seamless authentication using Auth0.
 - **Itinerary Management:** Effortlessly create, view, and manage personal or group travel itineraries.
 - **Booking Management:** Manage bookings for flights, hotels, and activities, all in one place.
-- **Passport Information Extraction:** Use OCR technology to extract and autofill passport details, speeding up the booking process.
-- **AI-Powered Travel Assistance:** Engage with AI to receive tailored recommendations for flights, accommodations, and tourist attractions.
-- **Multi-language Translation:** Real-time translation between English and Korean to assist with communication during your travels.
+- **Passport Information Extraction:** Use Upstage's Document OCR technology to extract and autofill passport details, speeding up the booking process.
+- **AI-Powered Travel Assistance:** Engage with Upstage's Chat AI and Upstage's Function Calling to receive tailored recommendations for flights, accommodations, and tourist attractions.
+- **Multi-language Translation:** Real-time translation between English and Korean to assist with communication during your travels using Upstage's Translation API.
 - **Interactive Maps:** Discover places to visit, hotels, restaurants, and entertainment using Mapbox-powered interactive maps.
 - **Real-time Group Communication:** Users can create groups for itineraries and communicate with each other live using **Socket.io**, making trip planning collaborative and more efficient.
-- **Seamless Integration:** Connects with multiple APIs, including Amadeus for flight information, Mapbox for place recommendations, and more.
+- **Seamless Integration:** Connects with multiple APIs, including Amadeus for flight information, Mapbox for place recommendations, restaurants, hotels and more.
 
 ## Getting Started
 
