@@ -61,6 +61,7 @@ const PassportForm = ({ params }) => {
 
 	const checkIfAllTravelerInfoIsFilled = async () => {
 		const isFilled = await checkIfAllTravelersInfo(id);
+		console.log(isFilled);
 		if (isFilled) {
 			// Redirect to the next page
 		}
