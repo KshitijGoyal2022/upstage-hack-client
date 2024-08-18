@@ -54,6 +54,7 @@
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "lucide-react": "^0.427.0",
     "mongoose": "^8.5.3",
+    "nanoid": "^5.0.7",
     "next": "14.2.5",
     "next-themes": "^0.3.0",
     "nodemon": "^3.1.4",

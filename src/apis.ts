@@ -6,7 +6,7 @@ export const saveFlight = async (
 	itineraryId: string
 ) => {
 	const response = await axios.post(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/${itineraryId}/flights`,
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/flights`,
 		{
 			flight,
 		}
@@ -20,7 +20,7 @@ export const saveHotel = async (
 	itineraryId: string
 ) => {
 	const response = await axios.post(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/${itineraryId}/hotel`,
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/hotel`,
 		{
 			hotel,
 		}
@@ -34,7 +34,7 @@ export const saveActivity = async (
 	itineraryId: string
 ) => {
 	const response = await axios.post(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/${itineraryId}/activity`,
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/activity`,
 		{
 			activity,
 		}
@@ -45,7 +45,7 @@ export const saveActivity = async (
 
 export const removeFlight = async (itineraryId: string) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/${itineraryId}/flights/`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/flights/`
 	);
 
 	return response.data;
@@ -53,7 +53,7 @@ export const removeFlight = async (itineraryId: string) => {
 
 export const removeHotel = async (hotelId: string, itineraryId: string) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/${itineraryId}/hotel/${hotelId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/hotel/${hotelId}`
 	);
 
 	return response.data;
@@ -64,7 +64,49 @@ export const removeActivity = async (
 	itineraryId: string
 ) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/${itineraryId}/activity/${activityId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/activity/${activityId}`
+	);
+
+	return response.data;
+};
+
+export const getItinerary = async (itineraryId: string) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}`
+	);
+
+	return response.data;
+};
+
+export const getUserItineraries = async (userId: string) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/user/${userId}`
+	);
+
+	return response.data;
+};
+
+export const createNewItinerary = async (userId: string, title: string) => {
+	const response = await axios.post(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/`,
+		{
+			userId,
+			title,
+		}
+	);
+
+	return response.data;
+};
+
+export const addNewMemberToItinerary = async (
+	itineraryId: string,
+	userId: string
+) => {
+	const response = await axios.post(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/new-member`,
+		{
+			userId,
+		}
 	);
 
 	return response.data;

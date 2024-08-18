@@ -22,6 +22,7 @@ import RenderPOIMap from "./renders/RenderPOIMap";
 import { Skeleton } from "@/components/ui/skeleton";
 import RenderHotelMap from "./renders/RenderHotelMap";
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const hotel_tags_set = new Set([
 	"lodging",
@@ -36,7 +37,11 @@ const hotel_tags_set = new Set([
 	"mountain_hut",
 ]);
 
-export default function AiPlayground(props: { itineraryId: string }) {
+export default function AiPlayground(props: {
+	itineraryId: string;
+	itinerary: any;
+}) {
+	const { user } = useAuth0();
 	const [message, setMessage] = React.useState("");
 
 	const chat = useChat(socket);
@@ -58,6 +63,10 @@ export default function AiPlayground(props: { itineraryId: string }) {
 	const callbackSaveActivity = async (activity: any) => {
 		await saveActivity(activity, props.itineraryId);
 	};
+
+	const isAdmin = props.itinerary?.admin?.provider?.id === user?.sub;
+
+	console.log(props.itinerary?.admin?.provider?.id === user?.sub);
 
 	return (
 		<div className="col-span-7 h-full overflow-y-scroll ">
@@ -163,56 +172,58 @@ export default function AiPlayground(props: { itineraryId: string }) {
 					</div>
 				</div>
 			)}
-			<form
-				className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring m-6"
-				x-chunk="dashboard-03-chunk-1"
-				onSubmit={callbackSubmit}
-			>
-				<Label htmlFor="message" className="sr-only">
-					Message
-				</Label>
-				<Input
-					id="message"
-					placeholder="Type your message here..."
-					className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0 outline-none"
-					value={message}
-					onChange={(e) => setMessage(e.target.value)}
-					disabled={chat.isLoading}
-				/>
-				<div className="flex items-center p-3 pt-0">
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button variant="ghost" size="icon">
-									<Paperclip className="size-4" />
-									<span className="sr-only">Attach file</span>
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side="top">Attach File</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button variant="ghost" size="icon">
-									<Mic className="size-4" />
-									<span className="sr-only">Use Microphone</span>
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side="top">Use Microphone</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-					<Button
-						type="submit"
+			{isAdmin && (
+				<form
+					className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring m-6"
+					x-chunk="dashboard-03-chunk-1"
+					onSubmit={callbackSubmit}
+				>
+					<Label htmlFor="message" className="sr-only">
+						Message
+					</Label>
+					<Input
+						id="message"
+						placeholder="Type your message here..."
+						className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0 outline-none"
+						value={message}
+						onChange={(e) => setMessage(e.target.value)}
 						disabled={chat.isLoading}
-						size="sm"
-						className="ml-auto gap-1.5 disabled:opacity-40"
-					>
-						Send Message
-						<CornerDownLeft className="size-3.5" />
-					</Button>
-				</div>
-			</form>
+					/>
+					<div className="flex items-center p-3 pt-0">
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button variant="ghost" size="icon">
+										<Paperclip className="size-4" />
+										<span className="sr-only">Attach file</span>
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="top">Attach File</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button variant="ghost" size="icon">
+										<Mic className="size-4" />
+										<span className="sr-only">Use Microphone</span>
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="top">Use Microphone</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+						<Button
+							type="submit"
+							disabled={chat.isLoading}
+							size="sm"
+							className="ml-auto gap-1.5 disabled:opacity-40"
+						>
+							Send Message
+							<CornerDownLeft className="size-3.5" />
+						</Button>
+					</div>
+				</form>
+			)}
 		</div>
 	);
 }
