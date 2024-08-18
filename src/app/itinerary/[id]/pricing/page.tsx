@@ -111,7 +111,7 @@ function PricingPage({ params }: { params: any }) {
 		if (itinerary && user?.sub) {
 			callbackPricing();
 		}
-	}, [itinerary, user?.sub]);
+	}, [itinerary, user?.sub, callbackPricing]);
 	if (authLoading) {
 		return (
 			<div className="flex items-center justify-center h-screen">

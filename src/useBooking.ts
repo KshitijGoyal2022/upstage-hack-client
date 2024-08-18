@@ -2,7 +2,7 @@
 import React from "react";
 import { getBooking, getItinerary } from "./apis";
 
-export const uesBooking = (id: string) => {
+export const useBooking = (id: string) => {
 	const [itinerary, setItinerary] = React.useState<any>(null);
 	const [isLoading, setLoading] = React.useState<boolean>(true);
 

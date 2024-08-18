@@ -3,7 +3,7 @@ import { FlightCard } from "@/components/renders/RenderFlights";
 import { HotelCard } from "@/components/renders/RenderHotels";
 import RenderPOIMap from "@/components/renders/RenderPOIMap";
 import { ActivityCard } from "@/components/renders/RenderPointOfInterests";
-import { uesBooking } from "@/useBooking";
+import { useBooking } from "@/useBooking";
 import { useItinerary } from "@/useItinerary";
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
@@ -61,7 +61,7 @@ function BookingPage({ params }: any) {
 	const { user, isLoading: authLoading } = useAuth0();
 	const { id } = params;
 
-	const { booking, isLoading } = uesBooking(id);
+	const { booking, isLoading } = useBooking(id);
 	if (authLoading) {
 		return (
 			<div className="flex items-center justify-center h-screen">
