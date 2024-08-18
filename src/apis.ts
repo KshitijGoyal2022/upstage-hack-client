@@ -156,6 +156,14 @@ export const updateTravelerInfo = async (
 	return response.data;
 };
 
+export const checkIfAllTravelersInfo = async (itineraryId: string) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/check-travelers-info`
+	);
+
+	return response.data;
+};
+
 export const confirmPricing = async (itineraryId: string) => {
 	const response = await axios.post(
 		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/confirm-pricing`
