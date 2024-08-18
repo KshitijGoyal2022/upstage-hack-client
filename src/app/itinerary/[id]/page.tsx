@@ -79,9 +79,6 @@ const Itinerary = ({ params }: any) => {
 
 			{/* Sidebar Section */}
 			<div className="col-span-2 border-r h-full sticky top-0">
-				<h2 className="mt-2 text-xl font-semibold p-4 flex justify-center">
-					Your Itineraries
-				</h2>
 				<Sidebar />
 			</div>
 

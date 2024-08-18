@@ -27,10 +27,13 @@ const Sidebar = () => {
 
   return (
     <div className='p-4 space-y-4 h-full'>
+      <h2 className='mt-2 text-xl font-semibold p-4 flex justify-center'>
+        Your Itineraries
+      </h2>
       <Button
         variant='outline'
         className='w-full flex items-center justify-start gap-2 rounded-lg p-2 hover:bg-muted'
-		onClick={callbackCreateNewItinerary}
+        onClick={callbackCreateNewItinerary}
       >
         <Avatar className='h-8 w-8 bg-muted'>
           <AvatarFallback>+</AvatarFallback>
