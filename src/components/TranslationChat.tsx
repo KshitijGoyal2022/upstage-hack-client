@@ -104,7 +104,7 @@ const TranslationChat: React.FC = () => {
             ) : (
               <div className='mb-2 p-2 max-w-xs rounded-lg bg-gray-200 self-start text-left'>
                 <div className='flex'>
-                  <p>안녕하세요</p>
+                  <p>Type English, Get Korean</p>
                 </div>
               </div>
             )}
