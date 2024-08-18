@@ -1,66 +1,60 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
 
-import Chat from '@/components/chat';
-import Sidebar from '@/components/sidebar';
-import Image from 'next/image';
+import Chat from "@/components/chat";
+import Sidebar from "@/components/sidebar";
+
+import AiPlayground from "@/components/AiPlayground";
+import { getItinerary } from "@/apis";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useItinerary } from "@/useItinerary";
 
 const Itinerary = ({ params }: any) => {
-  const { id } = params;
+	const { user, isLoading: authLoading } = useAuth0();
+	const { id } = params;
 
-  return (
-    <div className='grid grid-cols-12'>
-      <div className='col-span-2 border-r'>
-        <Sidebar />
-      </div>
+	const { itinerary, isLoading } = useItinerary(id);
 
-      {/* Main Content - Itinerary Details */}
-      <div className='col-span-7 p-6'>
-        <div className='flex flex-col'>
+	if (authLoading) {
+		return <div>Authenticating...</div>;
+	}
 
-          <div className='mt-4'>
-            <div className='relative h-64'>
-              {/* Replace with the Map component */}
-              <Image
-                src='/Europe-Political-Map.jpg'
-                alt='Map'
-                className='w-full h-full object-cover'
-                width={500}
-                height={500}
-              />
-            </div>
-            <div className='mt-6'>
-              {/* Itinerary details go here */}
-              <ul>
-                <li className='mb-4'>
-                  <div className='text-gray-700 font-medium'>
-                    Jeju International Airport
-                  </div>
-                  <div className='text-sm text-gray-500'>
-                    9:30-10:40am - KE1055
-                  </div>
-                </li>
-                <li className='mb-4'>
-                  <div className='text-yellow-600 font-medium'>
-                    XYZ Restaurant
-                  </div>
-                  <div className='text-sm text-gray-500'>11:30-12:30pm</div>
-                </li>
-                {/* Add other items similarly */}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+	if (isLoading) {
+		return <div>Loading itinerary...</div>;
+	}
 
-      {/* Chat Component */}
-      <div className='col-span-3 border-l'>
-        <Chat itineraryId={id} />
-      </div>
-    </div>
-  );
+	if (!itinerary) {
+		return <div>We would not find the itinerary with this id.</div>;
+	}
+
+	if (
+		itinerary?.users?.findIndex((u) => u?.user?.provider?.id === user?.sub) ===
+		-1
+	) {
+		return (
+			<div>
+				<div>Not a member</div>
+				<p>You are not a member. You need to have access in order to enter.</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className="grid grid-cols-12 max-h-max relative">
+			<div className="col-span-2 border-r h-full sticky top-0">
+				<Sidebar />
+			</div>
+
+			{/* Main Content - Itinerary Details */}
+			<AiPlayground itineraryId={id} itinerary={itinerary} />
+
+			{/* Chat Component */}
+			<div className="col-span-3 h-full border-l">
+				<Chat itineraryId={id} />
+			</div>
+		</div>
+	);
 };
 
 export default Itinerary;
