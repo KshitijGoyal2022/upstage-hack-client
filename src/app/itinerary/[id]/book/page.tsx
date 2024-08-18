@@ -41,66 +41,101 @@ const PassportForm = () => {
     formData.append('document', file);
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/ocr`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/ocr`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
       setPassportData(response.data); // Update the form with the extracted data
-
     } catch (error) {
       console.error('Error uploading file:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Button onClick={handleButtonClick}>
-        Upload Passport
-      </Button>
-      <Input
-        type='file'
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        style={{ display: 'none' }} // Hide the input element
-      />
-      <Button type="submit" className="mt-2">Extract Information</Button>
+    <form
+      onSubmit={handleSubmit}
+      className='max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg my-10'
+    >
+      <h2 className='text-2xl font-semibold mb-4 text-center'>
+        Passport Information Extraction
+      </h2>
 
-      {/* Auto-fill form fields with extracted passport data */}
-      <div className="mt-4">
-        <label>
-          Passport Number:
-          <Input type="text" value={passportData.passportNumber} readOnly />
-        </label>
-        <label>
-          Surname:
-          <Input type="text" value={passportData.surname} readOnly />
-        </label>
-        <label>
-          Nationality:
-          <Input type="text" value={passportData.nationality} readOnly />
-        </label>
-        <label>
-          Date of Birth:
-          <Input type="text" value={passportData.dateOfBirth} readOnly />
-        </label>
-        <label>
-          Place of Birth:
-          <Input type="text" value={passportData.placeOfBirth} readOnly />
-        </label>
-        <label>
-          Date of Issue:
-          <Input type="text" value={passportData.dateOfIssue} readOnly />
-        </label>
-        <label>
-          Date of Expiry:
-          <Input type="text" value={passportData.dateOfExpiry} readOnly />
-        </label>
-        <label>
-          Authority:
-          <Input type="text" value={passportData.authority} readOnly />
-        </label>
+      <div className='mt-6 grid grid-cols-1 gap-4'>
+        <div className='flex flex-col'>
+          <label className='text-gray-700'>Passport Number:</label>
+          <Input
+            type='text'
+            value={passportData.passportNumber}
+            readOnly
+            className='mt-1'
+          />
+        </div>
+        <div className='flex flex-col'>
+          <label className='text-gray-700'>Name:</label>
+          <Input
+            type='text'
+            value={passportData.surname}
+            readOnly
+            className='mt-1'
+          />
+        </div>
+        <div className='flex flex-col'>
+          <label className='text-gray-700'>Nationality:</label>
+          <Input
+            type='text'
+            value={passportData.nationality}
+            readOnly
+            className='mt-1'
+          />
+        </div>
+        <div className='flex flex-col'>
+          <label className='text-gray-700'>Date of Birth:</label>
+          <Input
+            type='text'
+            value={passportData.dateOfBirth}
+            readOnly
+            className='mt-1'
+          />
+        </div>
+        <div className='flex flex-col'>
+          <label className='text-gray-700'>Date of Issue:</label>
+          <Input
+            type='text'
+            value={passportData.dateOfIssue}
+            readOnly
+            className='mt-1'
+          />
+        </div>
+        <div className='flex flex-col'>
+          <label className='text-gray-700'>Date of Expiry:</label>
+          <Input
+            type='text'
+            value={passportData.dateOfExpiry}
+            readOnly
+            className='mt-1'
+          />
+        </div>
+
+        <div className='flex items-center justify-center gap-x-3'>
+          <Button onClick={handleButtonClick} className=''>
+            Upload Passport
+          </Button>
+          <Input
+            type='file'
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className='hidden'
+          />
+          <Button type='submit' className=''>
+            Extract Information
+          </Button>
+        </div>
       </div>
     </form>
   );
