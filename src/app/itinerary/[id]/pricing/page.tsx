@@ -75,6 +75,8 @@ function PricingPage({ params }: { params: any }) {
 	const { itinerary, isLoading } = useItinerary(id);
 	const [loadingPricing, setLoadingPricing] = React.useState(false);
 	const [pricing, setPricing] = React.useState<any>();
+	const [loadingCheck, setLoadingCheck] = React.useState(false);
+	const [loadingBook, setLoadingBook] = React.useState(false);
 
 	const [check, setCheck] = React.useState([]);
 
@@ -87,8 +89,10 @@ function PricingPage({ params }: { params: any }) {
 	};
 
 	const callbackCheck = async () => {
+		setLoadingCheck(true);
 		const result = await checkIfAllTravelersInfo(id);
 		setCheck(result);
+		setLoadingCheck(false);
 		return result;
 	};
 
@@ -98,7 +102,9 @@ function PricingPage({ params }: { params: any }) {
 			alert("Please fill in all the traveler information");
 			return;
 		}
-		bookItinerary(id);
+		setLoadingBook(true);
+		const booking = bookItinerary(id);
+		setLoadingBook(false);
 	};
 
 	React.useEffect(() => {

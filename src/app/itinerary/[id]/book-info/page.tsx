@@ -20,6 +20,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useItinerary } from "@/useItinerary";
+import Link from "next/link";
 
 export function DatePicker({ date, setDate }) {
 	return (
@@ -470,7 +471,9 @@ const PassportForm = ({ params }) => {
 					</Button>
 				</div>
 				<Button onClick={handleSave}>Save Details</Button>
-				<Button>Go to Pricing</Button>
+				<Link href={`/itinerary/${id}/pricing`} passHref>
+					<Button className="w-full">Go to Pricing</Button>
+				</Link>
 			</div>
 		</form>
 	);

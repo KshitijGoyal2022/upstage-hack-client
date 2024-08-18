@@ -12,6 +12,7 @@ import { makeItineraryid } from "@/helpers";
 
 export default function Home() {
 	const { user } = useAuth0();
+	const myItineraries = useMyItineraries();
 	const callbackCreateNewItinerary = async () => {
 		const title = makeItineraryid(12);
 		if (!user?.sub) {

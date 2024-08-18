@@ -172,4 +172,10 @@ export const confirmPricing = async (itineraryId: string) => {
 	return response.data;
 };
 
-export const bookItinerary = async (itineraryId: string) => {};
+export const bookItinerary = async (itineraryId: string) => {
+	const response = await axios.post(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/book`
+	);
+
+	return response.data;
+};
