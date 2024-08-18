@@ -25,7 +25,7 @@ import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { useAuth0 } from "@auth0/auth0-react";
 import { generateFlightOfferUniqueId } from "@/helpers";
 
-const hotel_tags_set = new Set([
+export const hotel_tags_set = new Set([
 	"lodging",
 	"hotel",
 	"vacation_rental",

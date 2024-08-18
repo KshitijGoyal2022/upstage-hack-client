@@ -23,6 +23,7 @@ export default function RenderPOIMap(props: RenderPOIMapProps) {
 					width: "100%",
 					height: "400px",
 					borderRadius: 8,
+					zIndex: 0,
 				}}
 				zoom={zoom}
 				scrollWheelZoom={false}
