@@ -41,7 +41,6 @@ export default function Chat({ itineraryId }: ChatProps) {
 				if (response.ok) {
 					const data = await response.json();
 					setMessages(data);
-					console.log(messages);
 				} else {
 					console.error("Failed to fetch messages", response.statusText);
 				}

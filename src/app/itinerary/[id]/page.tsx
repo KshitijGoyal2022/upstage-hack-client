@@ -14,7 +14,7 @@ const Itinerary = ({ params }: any) => {
 	const { user, isLoading: authLoading } = useAuth0();
 	const { id } = params;
 
-	const { itinerary, isLoading } = useItinerary(id);
+	const { itinerary, isLoading, onRefreshItinerary } = useItinerary(id);
 
 	if (authLoading) {
 		return <div>Authenticating...</div>;
@@ -47,7 +47,11 @@ const Itinerary = ({ params }: any) => {
 			</div>
 
 			{/* Main Content - Itinerary Details */}
-			<AiPlayground itineraryId={id} itinerary={itinerary} />
+			<AiPlayground
+				itineraryId={id}
+				itinerary={itinerary}
+				onRefreshItinerary={onRefreshItinerary}
+			/>
 
 			{/* Chat Component */}
 			<div className="col-span-3 h-full border-l">

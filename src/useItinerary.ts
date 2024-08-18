@@ -14,8 +14,14 @@ export const useItinerary = (id: string) => {
 		})();
 	}, [id]);
 
+	const onRefreshItinerary = async () => {
+		const itinerary = await getItinerary(id);
+		setItinerary(itinerary);
+	};
+
 	return {
 		itinerary,
 		isLoading,
+		onRefreshItinerary,
 	};
 };

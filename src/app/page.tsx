@@ -102,7 +102,7 @@ export default function Home() {
 				<h3>My itineraries</h3>
 				{myItineraries.itineraries?.map((itinerary) => {
 					return (
-						<div>
+						<div key={itinerary._id}>
 							<Link href={"/itinerary/" + itinerary._id}>
 								{itinerary.title}
 							</Link>

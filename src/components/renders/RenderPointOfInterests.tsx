@@ -4,7 +4,12 @@ import React from "react";
 import { CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 
-type CardProps = { activity: AmadeusActivityOffer; onPress: () => void };
+type CardProps = {
+	activity: AmadeusActivityOffer;
+	onPress: () => void;
+	isAdmin?: boolean;
+	isSelected?: boolean;
+};
 
 export function ActivityCard(props: CardProps) {
 	return (
@@ -40,11 +45,17 @@ export function ActivityCard(props: CardProps) {
 				</div>
 			</div>
 
-			<CardFooter className="flex-col">
-				<Button onClick={props.onPress} className="w-full">
-					Add to itinerary
-				</Button>
-			</CardFooter>
+			{props.isAdmin && (
+				<CardFooter className="flex-col">
+					<Button
+						disabled={props.isSelected}
+						onClick={props.onPress}
+						className="w-full"
+					>
+						{props.isSelected ? "Selected" : "Add to itinerary"}
+					</Button>
+				</CardFooter>
+			)}
 		</div>
 	);
 }

@@ -23,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import RenderHotelMap from "./renders/RenderHotelMap";
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { useAuth0 } from "@auth0/auth0-react";
+import { generateFlightOfferUniqueId } from "@/helpers";
 
 const hotel_tags_set = new Set([
 	"lodging",
@@ -40,6 +41,7 @@ const hotel_tags_set = new Set([
 export default function AiPlayground(props: {
 	itineraryId: string;
 	itinerary: any;
+	onRefreshItinerary: () => void;
 }) {
 	const { user } = useAuth0();
 	const [message, setMessage] = React.useState("");
@@ -55,18 +57,26 @@ export default function AiPlayground(props: {
 
 	const callbackSaveFlight = async (flight: any) => {
 		await saveFlight(flight, props.itineraryId);
+		props?.onRefreshItinerary();
 	};
 	const callbackSaveHotel = async (hotel: any) => {
 		await saveHotel(hotel, props.itineraryId);
+		props?.onRefreshItinerary();
 	};
 
 	const callbackSaveActivity = async (activity: any) => {
 		await saveActivity(activity, props.itineraryId);
+		props?.onRefreshItinerary();
 	};
 
 	const isAdmin = props.itinerary?.admin?.provider?.id === user?.sub;
-
-	console.log(props.itinerary?.admin?.provider?.id === user?.sub);
+	const selectedActivitiesMapboxIds = new Set([
+		...props.itinerary.activities.map(
+			(activity) => activity?.properties?.mapbox_id
+		),
+		...props.itinerary.hotels.map((hotel) => hotel?.properties?.mapbox_id),
+	]);
+	const flightId = generateFlightOfferUniqueId(props.itinerary.flight);
 
 	return (
 		<div className="col-span-7 h-full overflow-y-scroll ">
@@ -81,10 +91,14 @@ export default function AiPlayground(props: {
 
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
 											{chat.flight_offer_search?.map((flight) => {
+												const currentFlightId =
+													generateFlightOfferUniqueId(flight);
 												return (
 													<FlightCard
 														flight={flight}
 														key={flight.id}
+														isAdmin={isAdmin}
+														isSelected={currentFlightId === flightId}
 														onPress={() => callbackSaveFlight(flight)}
 													/>
 												);
@@ -107,6 +121,7 @@ export default function AiPlayground(props: {
 													<HotelCard
 														hotel={hotel}
 														key={hotel.hotelId}
+														isAdmin={isAdmin}
 														onPress={() => callbackSaveHotel(hotel)}
 													/>
 												);
@@ -127,10 +142,15 @@ export default function AiPlayground(props: {
 
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
 											{chat.points_of_interest?.map((place) => {
+												const mapboxId = place.properties.mapbox_id;
+												const isSelected =
+													selectedActivitiesMapboxIds.has(mapboxId);
 												return (
 													<ActivityCard
 														activity={place}
 														key={place.properties.mapbox_id}
+														isAdmin={isAdmin}
+														isSelected={isSelected}
 														onPress={() => {
 															if (
 																place.properties.poi_category.some((tag) =>

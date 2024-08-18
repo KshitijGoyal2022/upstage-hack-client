@@ -1,3 +1,5 @@
+import { AmadeusFlightOffer } from "./socket/chat";
+
 export function convertISODurationToTime(isoDuration: string) {
 	// Use a regular expression to extract days, hours, and minutes from the ISO 8601 duration
 	const regex = /P(?:T(?:(\d+)D)?(?:(\d+)H)?(?:(\d+)M)?)/;
@@ -53,3 +55,7 @@ export function millisecondsToDuration(milliseconds: number) {
 	// Combine them into the HH:MM:SS format
 	return `${formattedHours}h ${formattedMinutes}min`;
 }
+
+export const generateFlightOfferUniqueId = (flight: AmadeusFlightOffer) => {
+	return `${flight.id}-${flight.itineraries[0].segments[0].departure.iataCode}-${flight.itineraries[0].segments[0].arrival.iataCode}-${flight.itineraries[0].duration}-${flight.price.total}-${flight.price.currency}`;
+};
