@@ -3,7 +3,7 @@
 import { socket } from "@/socket";
 import { useChat } from "@/socket/chat";
 import React from "react";
-import { FlightCard } from "./renders/RenderFlights";
+import { FlightCard, FlightSkeleton } from "./renders/RenderFlights";
 
 import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
 
@@ -16,8 +16,27 @@ import {
 	TooltipTrigger,
 	TooltipProvider,
 } from "@/components/ui/tooltip";
+import { HotelCard } from "./renders/RenderHotels";
+import { ActivityCard } from "./renders/RenderPointOfInterests";
+import RenderPOIMap from "./renders/RenderPOIMap";
+import { Skeleton } from "@/components/ui/skeleton";
+import RenderHotelMap from "./renders/RenderHotelMap";
+import { saveActivity, saveFlight, saveHotel } from "@/apis";
 
-export default function AiPlayground() {
+const hotel_tags_set = new Set([
+	"lodging",
+	"hotel",
+	"vacation_rental",
+	"campground",
+	"motel",
+	"hostel",
+	"bed_and_breakfast",
+	"resort",
+	"apartment_or_condo",
+	"mountain_hut",
+]);
+
+export default function AiPlayground(props: { itineraryId: string }) {
 	const [message, setMessage] = React.useState("");
 
 	const chat = useChat(socket);
@@ -28,38 +47,124 @@ export default function AiPlayground() {
 		chat.sendChat(message);
 		setMessage("");
 	};
+
+	const callbackSaveFlight = async (flight: any) => {
+		await saveFlight(flight, props.itineraryId);
+	};
+	const callbackSaveHotel = async (hotel: any) => {
+		await saveHotel(hotel, props.itineraryId);
+	};
+
+	const callbackSaveActivity = async (activity: any) => {
+		await saveActivity(activity, props.itineraryId);
+	};
+
 	return (
-		<div className="col-span-7 h-full">
+		<div className="col-span-7 h-full overflow-y-scroll ">
 			<div className="gap-4 mb-6">
 				{chat.chats.length > 0 &&
-					[chat.chats[chat.chats.length - 1]].map((chat, index) => {
+					chat.chats.map((chat, index) => {
 						return (
 							<div key={index} className="space-y-8">
-								{chat.flight_offer_search?.length > 0 && (
+								{(chat.flight_offer_search?.length > 0 && (
 									<div>
-										<h1 className="font-semibold text-2xl mb-8 p-6">
-											Here are some flights that we found
-										</h1>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
 											{chat.flight_offer_search?.map((flight) => {
-												return <FlightCard flight={flight} key={flight.id} />;
+												return (
+													<FlightCard
+														flight={flight}
+														key={flight.id}
+														onPress={() => callbackSaveFlight(flight)}
+													/>
+												);
 											})}
 										</div>
 									</div>
-								)}
-								{chat.list_hotels_in_city && (
-									<div>{chat.list_hotels_in_city[0].name}</div>
-								)}
-								{chat.points_of_interest && (
-									<div>{chat.points_of_interest[0].properties.name}</div>
-								)}
+								)) ||
+									(chat.flight_offer_search === null && (
+										<p className="text-center">
+											Sorry, we could not find any flights
+										</p>
+									))}
+								{(chat.list_hotels_in_city && (
+									<div>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
+										<RenderHotelMap hotels={chat.list_hotels_in_city} />
+										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
+											{chat.list_hotels_in_city?.map((hotel) => {
+												return (
+													<HotelCard
+														hotel={hotel}
+														key={hotel.hotelId}
+														onPress={() => callbackSaveHotel(hotel)}
+													/>
+												);
+											})}
+										</div>
+									</div>
+								)) ||
+									(chat.list_hotels_in_city === null && (
+										<p className="text-center">
+											Sorry, we could not find any hotel
+										</p>
+									))}
+
+								{(chat.points_of_interest && (
+									<div>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
+										<RenderPOIMap activities={chat.points_of_interest} />
+
+										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
+											{chat.points_of_interest?.map((place) => {
+												return (
+													<ActivityCard
+														activity={place}
+														key={place.properties.mapbox_id}
+														onPress={() => {
+															if (
+																place.properties.poi_category.some((tag) =>
+																	hotel_tags_set.has(tag)
+																)
+															) {
+																callbackSaveHotel(place);
+															} else {
+																callbackSaveActivity(place);
+															}
+														}}
+													/>
+												);
+											})}
+										</div>
+									</div>
+								)) ||
+									(chat.points_of_interest === null && (
+										<p className="text-center">
+											Sorry, we could not find any result.
+										</p>
+									))}
 							</div>
 						);
 					})}
 			</div>
+			{/** Loadimg */}
+			{chat.isLoading && !chat.toolLoading.loading && (
+				<div className="flex items-center justify-center">
+					<div className="animate-spin rounded-full h-24 w-24 border-b-2 border-gray-900"></div>
+				</div>
+			)}
+			{chat.toolLoading.functionName && chat.toolLoading.loading && (
+				<div>
+					<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
+						{new Array(5).fill(0).map((_, index) => (
+							<FlightSkeleton key={index} />
+						))}
+					</div>
+				</div>
+			)}
 			<form
-				className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+				className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring m-6"
 				x-chunk="dashboard-03-chunk-1"
 				onSubmit={callbackSubmit}
 			>

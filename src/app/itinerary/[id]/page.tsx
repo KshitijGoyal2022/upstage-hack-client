@@ -11,13 +11,13 @@ const Itinerary = ({ params }: any) => {
 	const { id } = params;
 
 	return (
-		<div className="grid grid-cols-12 h-max">
-			<div className="col-span-2 border-r h-full">
+		<div className="grid grid-cols-12 max-h-max relative">
+			<div className="col-span-2 border-r h-full sticky top-0">
 				<Sidebar />
 			</div>
 
 			{/* Main Content - Itinerary Details */}
-			<AiPlayground />
+			<AiPlayground itineraryId={id} />
 
 			{/* Chat Component */}
 			<div className="col-span-3 h-full border-l">

@@ -12,6 +12,11 @@ import { Socket } from "socket.io-client";
 export const useChat = (socket: Socket) => {
 	const [chats, setChats] = useState<ChatPayload[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const [toolLoading, setToolLoading] = useState<any>({
+		functionName: "",
+		loading: false,
+	});
 	useEffect(() => {
 		socket.on("chat", (data: ChatPayload) => {
 			setChats((prev) => [...prev, data]);
@@ -20,6 +25,13 @@ export const useChat = (socket: Socket) => {
 		socket.on("chat:loading", (loading: boolean) => {
 			setIsLoading(loading);
 		});
+
+		socket.on(
+			"chat:loading:tool_call",
+			(payload: { funcitonName: string; loading: boolean }) => {
+				setToolLoading(payload);
+			}
+		);
 	}, [socket]);
 
 	const sendChat = React.useCallback(
@@ -31,8 +43,8 @@ export const useChat = (socket: Socket) => {
 	);
 
 	return React.useMemo(
-		() => ({ chats, sendChat, isLoading }),
-		[chats, sendChat, isLoading]
+		() => ({ chats, sendChat, isLoading, toolLoading }),
+		[chats, sendChat, isLoading, toolLoading]
 	);
 };
 
@@ -56,4 +68,5 @@ interface ChatPayload {
 	flight_offer_search: AmadeusFlightOffer[];
 	list_hotels_in_city: AmadeusHotelOffer[];
 	points_of_interest: AmadeusActivityOffer[];
+	title: string;
 }

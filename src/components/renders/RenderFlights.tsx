@@ -14,23 +14,13 @@ import Amadeus from "@/types/amadeus";
 import { convertISODurationToTime, millisecondsToDuration } from "@/helpers";
 // carrier code to name: https://www.npmjs.com/package/airline-codes
 
-const notifications = [
-	{
-		title: "From YVR,  Terminal M",
-		description: "TIME HERE",
-	},
-	{
-		title: "ARRIVAL at YYZ",
-		description: "1 hour ago",
-	},
-];
-
 export function FlightCard({
 	className,
 	...props
 }: {
 	className?: string;
 	flight: AmadeusFlightOffer;
+	onPress: () => void;
 }) {
 	const from = props.flight.itineraries?.[0].segments?.[0].departure?.iataCode;
 	const to =
@@ -172,7 +162,34 @@ export function FlightCard({
 				<p className="mb-6">
 					{props.flight.price?.grandTotal} {props.flight.price?.currency}
 				</p>
-				<Button className="w-full">Choose Flight</Button>
+				<Button onClick={props.onPress} className="w-full">
+					Choose Flight
+				</Button>
+			</CardFooter>
+		</Card>
+	);
+}
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function FlightSkeleton() {
+	return (
+		<Card className="w-[380px] shrink-0">
+			<CardHeader>
+				<CardTitle>
+					<Skeleton className="w-full h-8" />
+				</CardTitle>
+				<CardDescription>
+					<Skeleton className="w-1/2 h-4" />
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="grid gap-4">
+				<Skeleton className="w-full h-4" />
+				<Skeleton className="w-full h-4" />
+				<Skeleton className="w-full h-4" />
+			</CardContent>
+			<CardFooter className="flex-col gap-4">
+				<Skeleton className="w-16 h-4" />
+				<Skeleton className="w-full h-12" />
 			</CardFooter>
 		</Card>
 	);
