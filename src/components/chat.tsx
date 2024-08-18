@@ -109,7 +109,7 @@ export default function Chat({ itineraryId }: ChatProps) {
 	};
 
 	return (
-		<div className="flex flex-col rounded-xl bg-muted/50 lg:col-span-2 p-4">
+		<div className="flex flex-col rounded-xl lg:col-span-2 p-4">
 			<div className="flex-1 min-h-[650px] max-h-[650px] overflow-y-auto p-3">
 				{messages.map((msg, index) => (
 					<div

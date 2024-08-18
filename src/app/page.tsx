@@ -8,25 +8,12 @@ import { createNewItinerary } from "@/apis";
 import { useAuth0 } from "@auth0/auth0-react";
 import Router, { useRouter } from "next/router";
 import { useMyItineraries } from "@/useMyItineraries";
-
-function makeid(length) {
-	let result = "";
-	const characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	const charactersLength = characters.length;
-	let counter = 0;
-	while (counter < length) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		counter += 1;
-	}
-	return result;
-}
+import { makeItineraryid } from "@/helpers";
 
 export default function Home() {
-	const { user, isAuthenticated, isLoading } = useAuth0();
-	const myItineraries = useMyItineraries();
+	const { user } = useAuth0();
 	const callbackCreateNewItinerary = async () => {
-		const title = makeid(12);
+		const title = makeItineraryid(12);
 		if (!user?.sub) {
 			console.log("User is not authenticated.");
 			return;
@@ -80,7 +67,7 @@ export default function Home() {
 							</p>
 							<Link
 								className="text-gray-600 mt-2 flex items-center"
-								href="/itinerary/66c1655b48bb8abd73b8b840"
+								href="/itinerary"
 							>
 								Go to Profile
 								<ChevronRight />
