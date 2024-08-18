@@ -32,7 +32,9 @@ const TranslationChat: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/translation?q=${encodeURIComponent(message)}&direction=${direction}`,
+        `${
+          process.env.NEXT_PUBLIC_SERVER_URL
+        }/translation?q=${encodeURIComponent(message)}&direction=${direction}`,
         { method: 'GET' }
       );
 
@@ -64,13 +66,17 @@ const TranslationChat: React.FC = () => {
       {isOpen && (
         <div className='fixed bottom-16 left-6 w-80 h-96 bg-white border border-gray-200 rounded-xl shadow-xl p-4 flex flex-col'>
           <div className='flex justify-between items-center mb-4'>
-            <div className='flex flex-col'>
-              <h2 className='font-semibold text-lg text-indigo-600'>Translation Aid</h2>
-              <h2 className='font-medium text-sm text-gray-500'>영한 번역 지원</h2>
+            <div className='flex flex-col items-center w-full'>
+              <h2 className='font-semibold text-lg'>
+                Translation Aid
+              </h2>
+              <h2 className='font-medium text-sm text-gray-500'>
+                영한 번역 지원
+              </h2>
             </div>
 
             <Button
-              className='text-gray-500 hover:text-red-600 focus:outline-none'
+              className='text-gray-500 focus:outline-none'
               onClick={toggleChat}
               variant='ghost'
             >
@@ -90,11 +96,19 @@ const TranslationChat: React.FC = () => {
                       : 'bg-gray-200 self-start text-left'
                   }`}
                 >
-                  <p>{msg.content}</p>
+                  <div className='flex'>
+                    {msg.role !== 'user' && <p>번역:&nbsp;&nbsp;</p>}
+                    <p>{msg.content}</p>
+                  </div>
                 </div>
               ))
             ) : (
-              <p className='text-gray-500'>Enter text to translate...</p>
+              <div className='mb-2 p-2 max-w-xs rounded-lg bg-gray-200 self-start text-left'>
+                <div className='flex'>
+                  <p>번역:&nbsp;&nbsp;</p>
+                  <p>안녕하세요</p>
+                </div>
+              </div>
             )}
           </div>
 
