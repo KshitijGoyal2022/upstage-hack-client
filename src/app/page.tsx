@@ -1,8 +1,5 @@
 'use client';
 
-import LoginButton from '@/components/login';
-import LogoutButton from '@/components/logout';
-import Navbar from '@/components/navbar';
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
