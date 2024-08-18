@@ -57,5 +57,20 @@ export function millisecondsToDuration(milliseconds: number) {
 }
 
 export const generateFlightOfferUniqueId = (flight: AmadeusFlightOffer) => {
+	if (!flight?.id) {
+		return "";
+	}
 	return `${flight.id}-${flight.itineraries[0].segments[0].departure.iataCode}-${flight.itineraries[0].segments[0].arrival.iataCode}-${flight.itineraries[0].duration}-${flight.price.total}-${flight.price.currency}`;
 };
+export function makeItineraryid(length) {
+	let result = "";
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const charactersLength = characters.length;
+	let counter = 0;
+	while (counter < length) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		counter += 1;
+	}
+	return result;
+}

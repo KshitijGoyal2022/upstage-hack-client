@@ -76,11 +76,13 @@ export default function AiPlayground(props: {
 		),
 		...props.itinerary.hotels.map((hotel) => hotel?.properties?.mapbox_id),
 	]);
-	const flightId = generateFlightOfferUniqueId(props.itinerary.flight);
+	const flightId = generateFlightOfferUniqueId(props?.itinerary?.flight);
+
+	console.log(props.itinerary?.admin?.provider?.id === user?.sub);
 
 	return (
-		<div className="col-span-7 h-full overflow-y-scroll ">
-			<div className="gap-4 mb-6">
+		<div className="col-span-7 h-full flex flex-col">
+			<div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-[650px] max-h-[650px]">
 				{chat.chats.length > 0 &&
 					chat.chats.map((chat, index) => {
 						return (

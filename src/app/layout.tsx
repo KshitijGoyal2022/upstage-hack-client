@@ -9,6 +9,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Auth from '@/components/Auth';
 import TranslationChat from '@/components/TranslationChat';
 import Head from 'next/head'; // Import Head
+import { ToastProvider } from '@/components/ui/toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,10 +31,12 @@ export default function RootLayout({
       </Head>
       <body className={inter.className}>
         <AuthProvider>
-          <Auth />
-          <Navbar />
-          {children}
-          <TranslationChat />
+          <ToastProvider>
+            <Auth />
+            <Navbar />
+            {children}
+            <TranslationChat />
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>
