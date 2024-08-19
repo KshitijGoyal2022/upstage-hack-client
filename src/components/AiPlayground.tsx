@@ -78,30 +78,43 @@ export default function AiPlayground(props: {
 	]);
 	const flightId = generateFlightOfferUniqueId(props?.itinerary?.flight);
 
-	console.log(props.itinerary?.admin?.provider?.id === user?.sub);
-
 	return (
 		<div className="col-span-7 h-full flex flex-col">
 			<div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-[650px] max-h-[650px]">
 				{chat.chats.length > 0 &&
 					chat.chats.map((chat, index) => {
+						const plans = [
+							...(chat.flight_offer_search?.best_flights || []),
+							...(chat.flight_offer_search?.other_flights || []),
+						];
 						return (
 							<div key={index} className="space-y-8">
-								{(chat.flight_offer_search?.length > 0 && (
+								{(plans.length > 0 && (
 									<div>
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
-											{chat.flight_offer_search?.map((flight) => {
+											{plans?.map((flight, index) => {
 												const currentFlightId =
 													generateFlightOfferUniqueId(flight);
 												return (
 													<FlightCard
 														flight={flight}
-														key={flight.id}
+														key={currentFlightId}
 														isAdmin={isAdmin}
 														isSelected={currentFlightId === flightId}
-														onPress={() => callbackSaveFlight(flight)}
+														currency={
+															chat.flight_offer_search.search_parameters
+																?.currency || "USD"
+														}
+														onPress={() =>
+															callbackSaveFlight({
+																...flight,
+																currency:
+																	chat.flight_offer_search.search_parameters
+																		?.currency || "USD",
+															})
+														}
 													/>
 												);
 											})}

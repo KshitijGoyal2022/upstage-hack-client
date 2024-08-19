@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useItinerary } from "@/useItinerary";
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
+import PreviewPage from "../preview/page";
 
 interface Tax {
 	amount: string;
@@ -103,8 +104,9 @@ function PricingPage({ params }: { params: any }) {
 			return;
 		}
 		setLoadingBook(true);
-		const booking = bookItinerary(id);
+		const booking = await bookItinerary(id);
 		const bookingId = booking?.booking?.referenceId;
+		console.log(bookingId);
 		if (bookingId) {
 			window.location.href = `/booking/${bookingId}`;
 		}
@@ -113,7 +115,7 @@ function PricingPage({ params }: { params: any }) {
 
 	React.useEffect(() => {
 		if (itinerary && user?.sub) {
-			callbackPricing();
+			// callbackPricing();
 		}
 	}, [itinerary, user?.sub, callbackPricing]);
 	if (authLoading) {
@@ -182,7 +184,8 @@ function PricingPage({ params }: { params: any }) {
 					? "Only admin can create a booking"
 					: "Book Flight"}
 			</Button>
-			{check.length > 0 && (
+			<PreviewPage params={{ id }} />
+			{/* {check.length > 0 && (
 				<div>
 					<h2 className="text-2xl font-semibold mb-4">Errors</h2>
 					{check.map((error) => (
@@ -210,7 +213,7 @@ function PricingPage({ params }: { params: any }) {
 						/>
 					</div>
 				)}
-			</div>
+			</div> */}
 		</div>
 	);
 }

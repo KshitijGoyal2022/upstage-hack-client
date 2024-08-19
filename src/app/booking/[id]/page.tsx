@@ -129,10 +129,15 @@ function BookingPage({ params }: any) {
 				Flight Booking Reference: {booking?.booking?.referenceId}
 			</div>
 			<div className="flex flex-row gap-8">
-				{flightOffer?.id && (
+				{flightOffer && (
 					<div>
 						<h2 className="text-2xl font-semibold mb-4">Your Flights</h2>
-						<FlightCard flight={flightOffer} isAdmin={isAdmin} isSelected />
+						<FlightCard
+							flight={flightOffer}
+							isAdmin={isAdmin}
+							isSelected
+							currency={flightOffer?.currency || "USD"}
+						/>
 					</div>
 				)}
 

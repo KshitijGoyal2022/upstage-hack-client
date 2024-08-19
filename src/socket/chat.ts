@@ -3,6 +3,7 @@
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { FlightOffer$1 } from "@/types/amadeus";
 import { PointsOfInterest } from "@/types/mapbox";
+import { SerpFlight } from "@/types/serp";
 /**
  * Chat socket implementation
  */
@@ -71,7 +72,7 @@ export interface AmadeusHotelOffer {
 export type AmadeusActivityOffer = PointsOfInterest;
 
 interface ChatPayload {
-	flight_offer_search: AmadeusFlightOffer[];
+	flight_offer_search: SerpFlight;
 	list_hotels_in_city: AmadeusHotelOffer[];
 	points_of_interest: AmadeusActivityOffer[];
 	title: string;

@@ -1,4 +1,5 @@
 import { AmadeusFlightOffer } from "./socket/chat";
+import { SerpFlight } from "./types/serp";
 
 export function convertISODurationToTime(isoDuration: string) {
 	// Use a regular expression to extract days, hours, and minutes from the ISO 8601 duration
@@ -34,33 +35,39 @@ export function convertISODurationToTime(isoDuration: string) {
 	return formattedTime;
 }
 
-export function millisecondsToDuration(milliseconds: number) {
+export function millisecondsToDuration(minutes: number) {
 	// Convert milliseconds to total seconds
-	const totalSeconds = Math.floor(milliseconds / 1000);
 
 	// Calculate hours
-	const hours = Math.floor(totalSeconds / 3600);
+	const hours = Math.floor(minutes / 60);
 
 	// Calculate remaining minutes
-	const minutes = Math.floor((totalSeconds % 3600) / 60);
 
 	// Calculate remaining seconds
-	const seconds = totalSeconds % 60;
 
 	// Format the hours, minutes, and seconds to always have two digits
 	const formattedHours = String(hours).padStart(2, "0");
-	const formattedMinutes = String(minutes).padStart(2, "0");
-	const formattedSeconds = String(seconds).padStart(2, "0");
+	const formattedMinutes = String((minutes % hours) * 60).padStart(2, "0");
 
 	// Combine them into the HH:MM:SS format
 	return `${formattedHours}h ${formattedMinutes}min`;
 }
 
-export const generateFlightOfferUniqueId = (flight: AmadeusFlightOffer) => {
-	if (!flight?.id) {
+export const generateFlightOfferUniqueId = (
+	flight: SerpFlight["best_flights"][number]
+) => {
+	if (!flight?.flights?.length) {
 		return "";
 	}
-	return `${flight.id}-${flight.itineraries[0].segments[0].departure.iataCode}-${flight.itineraries[0].segments[0].arrival.iataCode}-${flight.itineraries[0].duration}-${flight.price.total}-${flight.price.currency}`;
+	const idParts = flight.flights.map(
+		(flight) =>
+			`${flight.departure_airport.id}-${flight.arrival_airport.id}-${flight.flight_number}-${flight.departure_airport.time}`
+	);
+
+	// Join all parts into one string
+	const rawId = idParts.join("|");
+
+	return rawId;
 };
 export function makeItineraryid(length) {
 	let result = "";
