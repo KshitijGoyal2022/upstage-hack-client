@@ -1,38 +1,45 @@
-'use client'
-import React, { useState } from 'react'
-import BookingsSidebar from '@/components/booking-sidebar'
-import Sidebar from '@/components/sidebar'
+"use client";
+import React, { useState } from "react";
+import BookingsSidebar from "@/components/booking-sidebar";
+import Sidebar from "@/components/sidebar";
+import BookingPage from "../booking/[id]/page";
 // import BookingDetails from '@/components/booking-details' // Assuming this component renders booking details
 
 const ItineraryPage = () => {
-  const [selectedBooking, setSelectedBooking] = useState(null); // State to hold the selected booking
+	const [selectedBooking, setSelectedBooking] = useState(null); // State to hold the selected booking
 
-  // const handleSelectBooking = (booking) => {
-  //   setSelectedBooking(booking);
-  // };
+	// const handleSelectBooking = (booking) => {
+	//   setSelectedBooking(booking);
+	// };
 
-  return (
-    <div className="flex h-screen">
-      {/* Sidebar Section */}
-      <div className="w-1/6 h-full border-r rounded-3xl">
-        <Sidebar />
-      </div>
+	return (
+		<div className="flex h-screen">
+			{/* Sidebar Section */}
+			<div className="w-1/6 h-full border-r rounded-3xl">
+				<Sidebar />
+			</div>
 
-      {/* Bookings Sidebar Section */}
-      <div className="w-1/6  h-full border-r rounded-3xl">
-        <BookingsSidebar /> {/* Pass the select handler */}
-      </div>
+			{/* Bookings Sidebar Section */}
+			<div className="w-1/6  h-full border-r rounded-3xl">
+				<BookingsSidebar
+					onSelect={setSelectedBooking}
+					selected={selectedBooking}
+				/>{" "}
+				{/* Pass the select handler */}
+			</div>
 
-      {/* Main Content Area */}
-      <div className="w-4/6 h-full p-4 overflow-auto">
-        {/* {selectedBooking ? (
-          <BookingDetails booking={selectedBooking} />
-        ) : ( */}
-          <div className="text-center text-gray-500">Please select a booking</div>
-        {/* )} */}
-      </div>
-    </div>
-  )
-}
+			{/* Main Content Area */}
+			<div className="w-4/6 h-full p-4 overflow-auto">
+				{selectedBooking ? (
+					<BookingPage params={{ id: selectedBooking }} />
+				) : (
+					<div className="text-center text-gray-500">
+						Please select a booking
+					</div>
+				)}
+			</div>
+		</div>
+	);
+};
 
 export default ItineraryPage;
