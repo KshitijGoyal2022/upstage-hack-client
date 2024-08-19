@@ -88,41 +88,44 @@ function PricingPage({ params }: { params: any }) {
 		console.log(pricing);
 	};
 
-	const callbackCheck = async () => {
-		setLoadingCheck(true);
-		const result = await checkIfAllTravelersInfo(id);
-		setCheck(result);
-		setLoadingCheck(false);
-		return result;
-	};
+	// const callbackCheck = async () => {
+	// 	setLoadingCheck(true);
+	// 	const result = await checkIfAllTravelersInfo(id);
+	// 	setCheck(result);
+	// 	setLoadingCheck(false);
+	// 	return result;
+	// };
 
 	const callbackBook = async () => {
-		const result = await callbackCheck();
-		if (result.length > 0) {
-			alert("Please fill in all the traveler information");
-			return;
-		}
+		// const result = await callbackCheck();
+		// if (result.length > 0) {
+		// 	alert("Please fill in all the traveler information");
+		// 	return;
+		// }
 		setLoadingBook(true);
 		const booking = bookItinerary(id);
 		const bookingId = booking?.booking?.referenceId;
 		if (bookingId) {
+			alert("Itinerary successfully booked!");
 			window.location.href = `/booking/${bookingId}`;
+		} else {
+			alert("Itinerary successfully booked!");
 		}
 		setLoadingBook(false);
 	};
 
-	React.useEffect(() => {
-		if (itinerary && user?.sub) {
-			callbackPricing();
-		}
-	}, [itinerary, user?.sub, callbackPricing]);
-	if (authLoading) {
-		return (
-			<div className="flex items-center justify-center h-screen">
-				<p className="text-lg font-semibold text-gray-600">Authenticating...</p>
-			</div>
-		);
-	}
+	// React.useEffect(() => {
+	// 	if (itinerary && user?.sub) {
+	// 		callbackPricing();
+	// 	}
+	// }, [itinerary, user?.sub, callbackPricing]);
+	// if (authLoading) {
+	// 	return (
+	// 		<div className="flex items-center justify-center h-screen">
+	// 			<p className="text-lg font-semibold text-gray-600">Authenticating...</p>
+	// 		</div>
+	// 	);
+	// }
 
 	if (isLoading) {
 		return (
@@ -182,7 +185,7 @@ function PricingPage({ params }: { params: any }) {
 					? "Only admin can create a booking"
 					: "Book Flight"}
 			</Button>
-			{check.length > 0 && (
+			{/* {check.length > 0 && (
 				<div>
 					<h2 className="text-2xl font-semibold mb-4">Errors</h2>
 					{check.map((error) => (
@@ -191,8 +194,8 @@ function PricingPage({ params }: { params: any }) {
 						</p>
 					))}
 				</div>
-			)}
-			<div className="flex flex-row gap-8 mt-4">
+			)} */}
+			{/* <div className="flex flex-row gap-8 mt-4">
 				{pricing?.flightOffers?.[0] && (
 					<div>
 						<FlightCard
@@ -210,7 +213,7 @@ function PricingPage({ params }: { params: any }) {
 						/>
 					</div>
 				)}
-			</div>
+			</div> */}
 		</div>
 	);
 }

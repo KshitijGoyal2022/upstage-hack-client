@@ -308,7 +308,7 @@ const PassportForm = ({ params }) => {
 				</div>
 
 				<div className="border-b border-gray-300"></div>
-				{/* <div className="flex flex-col">
+				<div className="flex flex-col">
 					<label htmlFor="documentType" className="text-gray-700">
 						Document Type:
 					</label>
@@ -323,7 +323,7 @@ const PassportForm = ({ params }) => {
 						<option value="VISA">Visa</option>
 						<option value="OTHER">Other</option>
 					</select>
-				</div> */}
+				</div>
 
 				<div className="flex flex-col">
 					<label htmlFor="number" className="text-gray-700">
@@ -438,7 +438,7 @@ const PassportForm = ({ params }) => {
 					/>
 				</div>
 
-				{/* <div className="flex flex-col">
+				<div className="flex flex-col">
 					<label htmlFor="holder" className="text-gray-700">
 						Holder:
 					</label>
@@ -454,7 +454,7 @@ const PassportForm = ({ params }) => {
 						}
 						className="mt-1"
 					/>
-				</div> */}
+				</div>
 
 				<div className="flex items-center justify-center gap-x-3">
 					<Button onClick={handleButtonClick} className="">
