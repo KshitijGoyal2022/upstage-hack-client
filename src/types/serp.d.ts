@@ -515,4 +515,17 @@ export interface GooglePlacesResult {
 		sitelinks?: { inline: { title: string; link: string }[] };
 		source?: string;
 	}[];
+	shopping_results: {
+		price: string;
+		extracted_price: number;
+		block: string;
+		link: string;
+		position: number;
+		rating: number;
+		reviews: number;
+		source: string;
+		thumbnail: string;
+		title: string;
+		extensions: string[];
+	}[];
 }

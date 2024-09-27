@@ -2,7 +2,7 @@
 
 import { socket } from "@/socket";
 import { useChat } from "@/socket/chat";
-import React from "react";
+import React, { act } from "react";
 import { FlightCard, FlightSkeleton } from "./renders/RenderFlights";
 
 import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
@@ -16,10 +16,7 @@ import {
 	TooltipTrigger,
 	TooltipProvider,
 } from "@/components/ui/tooltip";
-import { HotelCard } from "./renders/RenderHotels";
-import { ActivityCard } from "./renders/RenderPointOfInterests";
-import RenderPOIMap from "./renders/RenderPOIMap";
-import RenderHotelMap from "./renders/RenderHotelMap";
+
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { useAuth0 } from "@auth0/auth0-react";
 import { generateFlightOfferUniqueId } from "@/helpers";
@@ -46,7 +43,7 @@ export default function AiPlayground(props: {
 	const { user } = useAuth0();
 	const [message, setMessage] = React.useState("");
 
-	const chat = useChat(socket);
+	const chat = useChat(props.itineraryId, socket);
 	console.log(chat);
 
 	const callbackSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -245,7 +242,58 @@ export default function AiPlayground(props: {
 										})}
 									</div>
 								)}
-								{/**show me some activities in vancouver */}
+								{/**show me some museums in milan*/}
+								{chat.places_search?.shopping_results && (
+									<div>
+										{chat?.places_search?.shopping_results?.map((activity) => {
+											return (
+												<div key={activity.title}>
+													<p>
+														{activity.title} - {activity.rating}{" "}
+														{activity.rating}
+													</p>
+													<p>{activity.price}</p>
+													<Image
+														src={activity.thumbnail}
+														alt={activity.title}
+														width={70}
+														height={70}
+													/>
+													<a href={activity.link}>buy</a>
+												</div>
+											);
+										})}
+									</div>
+								)}
+
+								{/** local results places  sinc as : shopping malls in milan */}
+								{chat.places_search?.local_results?.places && (
+									<div>
+										{chat.places_search.local_results?.places?.map(
+											(activity) => {
+												return (
+													<div key={activity.place_id}>
+														<p>
+															{activity.title} - {activity.rating}{" "}
+															{activity.rating}
+														</p>
+														<p>{activity.description}</p>
+														<p>{activity.address}</p>
+														{/** Contains coordinates */}
+														<p>{activity.hours}</p>
+														<p>{activity.type}</p>
+														<Image
+															src={activity.thumbnail}
+															alt={activity.title}
+															width={70}
+															height={70}
+														/>
+													</div>
+												);
+											}
+										)}
+									</div>
+								)}
 							</div>
 						);
 					})}

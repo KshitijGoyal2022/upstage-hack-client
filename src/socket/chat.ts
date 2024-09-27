@@ -18,7 +18,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
-export const useChat = (socket: Socket) => {
+export const useChat = (id: string, socket: Socket) => {
 	const [chats, setChats] = useState<ChatPayload[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -46,9 +46,12 @@ export const useChat = (socket: Socket) => {
 	const sendChat = React.useCallback(
 		(value: string) => {
 			console.log("SENDING CHAT", value);
-			socket.emit("chat", value);
+			socket.emit("chat", {
+				id,
+				value,
+			});
 		},
-		[socket]
+		[socket, id]
 	);
 
 	return React.useMemo(
