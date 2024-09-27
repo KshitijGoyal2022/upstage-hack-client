@@ -99,20 +99,7 @@ const PassportForm = ({ params }) => {
 				}
 			);
 			setGender(myTravelerInfo.gender || "MALE");
-			setPassportData(
-				myTravelerInfo.documents[0] || {
-					documentType: "PASSPORT", // Default to PASSPORT, can be changed to "ID_CARD", "VISA", or "OTHER"
-					birthPlace: "",
-					issuanceLocation: "",
-					issuanceDate: "",
-					number: "",
-					expiryDate: "",
-					issuanceCountry: "",
-					validityCountry: "",
-					nationality: "",
-					holder: true,
-				}
-			);
+			setPassportData({ ...passportData, ...myTravelerInfo.documents[0] });
 			setDateOfBirth(myTravelerInfo.dateOfBirth || "");
 		}
 	}, [myTravelerInfo]);
@@ -191,6 +178,8 @@ const PassportForm = ({ params }) => {
 			gender: gender,
 		});
 	};
+
+	console.log(passportData);
 
 	if (authLoading) {
 		return (

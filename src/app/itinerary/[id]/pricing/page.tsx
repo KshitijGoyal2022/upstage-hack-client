@@ -98,11 +98,11 @@ function PricingPage({ params }: { params: any }) {
 	};
 
 	const callbackBook = async () => {
-		const result = await callbackCheck();
-		if (result.length > 0) {
-			alert("Please fill in all the traveler information");
-			return;
-		}
+		// const result = await callbackCheck();
+		// if (result.length > 0) {
+		// 	alert("Please fill in all the traveler information");
+		// 	return;
+		// }
 		setLoadingBook(true);
 		const booking = await bookItinerary(id);
 		const bookingId = booking?.booking?.referenceId;

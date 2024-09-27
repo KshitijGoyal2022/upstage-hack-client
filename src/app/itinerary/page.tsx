@@ -2,7 +2,12 @@
 import React, { useState } from "react";
 import BookingsSidebar from "@/components/booking-sidebar";
 import Sidebar from "@/components/sidebar";
-import BookingPage from "../booking/[id]/page";
+import dynamic from "next/dynamic";
+
+const BookingPage = dynamic(() => import("@/components/BookingPage"), {
+	ssr: false,
+});
+
 // import BookingDetails from '@/components/booking-details' // Assuming this component renders booking details
 
 const ItineraryPage = () => {

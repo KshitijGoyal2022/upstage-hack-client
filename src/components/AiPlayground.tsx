@@ -80,7 +80,7 @@ export default function AiPlayground(props: {
 
 	return (
 		<div className="col-span-7 h-full flex flex-col">
-			<div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-[650px] max-h-[650px]">
+			<div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-[650px] max-h-[800px]">
 				{chat.chats.length > 0 &&
 					chat.chats.map((chat, index) => {
 						const plans = [
