@@ -151,7 +151,6 @@ export type TravelerInfo = {
 		number: string;
 		expiryDate: string;
 		issuanceCountry: string;
-		validityCountry: string;
 		nationality: string;
 		holder: boolean;
 	}[];

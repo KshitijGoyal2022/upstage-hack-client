@@ -69,7 +69,6 @@ const PassportForm = ({ params }) => {
 		number: "",
 		expiryDate: "",
 		issuanceCountry: "",
-		validityCountry: "",
 		nationality: "",
 		holder: true,
 	});
@@ -136,7 +135,7 @@ const PassportForm = ({ params }) => {
 
 		try {
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/ocr`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/passport`,
 				formData,
 				{
 					headers: {
@@ -145,7 +144,21 @@ const PassportForm = ({ params }) => {
 				}
 			);
 
-			setPassportData(response.data); // Update the form with the extracted data
+			const data = response.data;
+
+			setPassportData({
+				...passportData,
+				number: data.passport_number,
+				nationality: data.nationality,
+				birthPlace: data.place_of_birth,
+				expiryDate: data.expiration_date,
+				issuanceCountry: data.issuing_country,
+				issuanceDate: data.issuing_date,
+				issuanceLocation: data.issuing_location,
+			});
+			setDateOfBirth(data.date_of_birth);
+			setFirstName(data.first_name);
+			setLastName(data.last_name);
 		} catch (error) {
 			console.error("Error uploading file:", error);
 		}
@@ -410,18 +423,6 @@ const PassportForm = ({ params }) => {
 						id="issuanceCountry"
 						type="text"
 						value={passportData.issuanceCountry}
-						onChange={handleInputChange}
-						className="mt-1"
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="validityCountry" className="text-gray-700">
-						Validity Country:
-					</label>
-					<Input
-						id="validityCountry"
-						type="text"
-						value={passportData.validityCountry}
 						onChange={handleInputChange}
 						className="mt-1"
 					/>
