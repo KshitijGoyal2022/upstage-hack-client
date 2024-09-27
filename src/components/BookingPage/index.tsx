@@ -135,6 +135,7 @@ function BookingPage({ params }: any) {
 							isAdmin={isAdmin}
 							isSelected
 							currency={flightOffer?.currency || "USD"}
+							onPress={() => {}}
 						/>
 					</div>
 				)}

@@ -1,5 +1,5 @@
 import { AmadeusFlightOffer } from "./socket/chat";
-import { SerpFlight } from "./types/serp";
+import { GoogleFlightData, SerpFlight } from "./types/serp";
 
 export function convertISODurationToTime(isoDuration: string) {
 	// Use a regular expression to extract days, hours, and minutes from the ISO 8601 duration
@@ -54,7 +54,7 @@ export function millisecondsToDuration(minutes: number) {
 }
 
 export const generateFlightOfferUniqueId = (
-	flight: SerpFlight["best_flights"][number]
+	flight: GoogleFlightData["best_flights"][number]
 ) => {
 	if (!flight?.flights?.length) {
 		return "";

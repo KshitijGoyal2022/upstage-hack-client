@@ -19,11 +19,11 @@ import {
 import { HotelCard } from "./renders/RenderHotels";
 import { ActivityCard } from "./renders/RenderPointOfInterests";
 import RenderPOIMap from "./renders/RenderPOIMap";
-import { Skeleton } from "@/components/ui/skeleton";
 import RenderHotelMap from "./renders/RenderHotelMap";
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { useAuth0 } from "@auth0/auth0-react";
 import { generateFlightOfferUniqueId } from "@/helpers";
+import Image from "next/image";
 
 export const hotel_tags_set = new Set([
 	"lodging",
@@ -126,68 +126,126 @@ export default function AiPlayground(props: {
 											Sorry, we could not find any flights
 										</p>
 									))}
-								{(chat.list_hotels_in_city && (
+
+								{chat.places_search?.top_sights && (
+									<div>
+										{chat.places_search.top_sights?.sights?.map((activity) => {
+											return (
+												<div key={activity.title}>
+													<p>
+														{activity.title} - {activity.rating}
+													</p>
+													<p>
+														{activity.description} - {activity.price}
+													</p>
+													<Image
+														src={activity.thumbnail}
+														alt={activity.title}
+														width={70}
+														height={70}
+													/>
+												</div>
+											);
+										})}
+									</div>
+								)}
+								{/**show me some upcoming events in vancouver */}
+								{chat?.event_search?.events_results && (
 									<div>
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
-										<RenderHotelMap hotels={chat.list_hotels_in_city} />
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
-											{chat.list_hotels_in_city?.map((hotel) => {
+											{chat?.event_search?.events_results?.map((event) => {
 												return (
-													<HotelCard
-														hotel={hotel}
-														key={hotel.hotelId}
-														isAdmin={isAdmin}
-														onPress={() => callbackSaveHotel(hotel)}
-													/>
+													<div key={event.title}>
+														<p>
+															{event.title} - {event.date.start_date} -{" "}
+															{event.date.when}
+														</p>
+														<p>{event.description}</p>
+														<p>
+															<a href={event.ticket_info[0].link}>
+																{event.ticket_info[0].source}
+															</a>
+														</p>
+														<Image
+															src={event.thumbnail}
+															alt={event.title}
+															width={70}
+															height={70}
+														/>
+														<Image
+															src={event.event_location_map.image}
+															alt={event.title}
+															width={70}
+															height={70}
+														/>
+													</div>
 												);
 											})}
 										</div>
 									</div>
-								)) ||
-									(chat.list_hotels_in_city === null && (
-										<p className="text-center">
-											Sorry, we could not find any hotel
-										</p>
-									))}
-
-								{(chat.points_of_interest && (
+								)}
+								{/**show me some hotels to stay in new york from 20 october 2024, to 30 october 2024 */}
+								{chat.hotel_search?.properties && (
 									<div>
-										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
-										<RenderPOIMap activities={chat.points_of_interest} />
-
-										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
-											{chat.points_of_interest?.map((place) => {
-												const mapboxId = place.properties.mapbox_id;
-												const isSelected =
-													selectedActivitiesMapboxIds.has(mapboxId);
-												return (
-													<ActivityCard
-														activity={place}
-														key={place.properties.mapbox_id}
-														isAdmin={isAdmin}
-														isSelected={isSelected}
-														onPress={() => {
-															if (
-																place.properties.poi_category.some((tag) =>
-																	hotel_tags_set.has(tag)
-																)
-															) {
-																callbackSaveHotel(place);
-															} else {
-																callbackSaveActivity(place);
-															}
-														}}
+										{chat.hotel_search.properties.map((hotel) => {
+											return (
+												<div key={hotel.property_token}>
+													<p>
+														{hotel.name} - {hotel.overall_rating} (
+														{hotel.reviews})
+													</p>
+													<p>Ameneties: {hotel.amenities.toString()}</p>
+													<p>Check in: {hotel.check_in_time}</p>
+													<p>Check out: {hotel.check_out_time}</p>
+													<p>Info: {hotel.essential_info?.toString()}</p>
+													<p>
+														Price: {hotel.rate_per_night.lowest} - Total:{" "}
+														{hotel.total_rate.lowest}
+													</p>
+													<Image
+														src={hotel.images[0].thumbnail}
+														alt={hotel.name}
+														width={70}
+														height={70}
 													/>
-												);
-											})}
-										</div>
+													<a href={hotel.link}>Buy</a>
+												</div>
+											);
+										})}
 									</div>
-								)) ||
-									(chat.points_of_interest === null && (
-										<p className="text-center">
-											Sorry, we could not find any result.
-										</p>
-									))}
+								)}
+								{/**show me some restaurants in new york */}
+								{chat.restaurant_search?.local_results && (
+									<div>
+										{chat.restaurant_search.local_results.map((restaurant) => {
+											return (
+												<div key={restaurant.restaurant_id}>
+													<p>
+														{restaurant.title} - {restaurant.rating} (
+														{restaurant.reviews})
+													</p>
+													<p>
+														{restaurant.description || ""} - {restaurant.price}
+													</p>
+													<p>
+														{restaurant.address} - {restaurant.type}
+													</p>
+													<p>
+														{restaurant.distance} - {restaurant.hours}
+													</p>
+													<Image
+														src={restaurant.images[0]}
+														alt={restaurant.restaurant_id}
+														width={70}
+														height={70}
+													/>
+												</div>
+											);
+										})}
+									</div>
+								)}
+								{/**show me some activities in vancouver */}
 							</div>
 						);
 					})}

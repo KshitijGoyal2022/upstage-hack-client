@@ -9,11 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { AmadeusFlightOffer } from "@/socket/chat";
-import Amadeus from "@/types/amadeus";
-import { convertISODurationToTime, millisecondsToDuration } from "@/helpers";
-// carrier code to name: https://www.npmjs.com/package/airline-codes
+import { millisecondsToDuration } from "@/helpers";
 
 export let currencyFormatter = (currency: string) =>
 	new Intl.NumberFormat("en-US", {
@@ -26,7 +22,7 @@ export function FlightCard({
 	...props
 }: {
 	className?: string;
-	flight: SerpFlight["best_flights"][number];
+	flight: GoogleFlightData["best_flights"][number];
 	onPress: () => void;
 	isAdmin?: boolean;
 	isSelected?: boolean;
@@ -92,7 +88,12 @@ export function FlightCard({
 									</p>
 									<div className="flex flex-row gap-2 items-center">
 										{flight.airline_logo && (
-											<Image src={flight.airline_logo} width={30} height={30} />
+											<Image
+												src={flight.airline_logo}
+												width={30}
+												height={30}
+												alt={flight.airline}
+											/>
 										)}
 										<p className="text-sm text-muted-foreground">
 											Airline: {flight.airline}
@@ -176,7 +177,7 @@ export function FlightCard({
 	);
 }
 import { Skeleton } from "@/components/ui/skeleton";
-import { SerpFlight } from "@/types/serp";
+import { GoogleFlightData, SerpFlight } from "@/types/serp";
 import Image from "next/image";
 
 export function FlightSkeleton() {
