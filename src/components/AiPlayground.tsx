@@ -77,7 +77,7 @@ export default function AiPlayground(props: {
 
 	return (
 		<div className="col-span-7 h-full flex flex-col">
-			<div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-[650px] max-h-[800px]">
+			<div className="flex-1 overflow-y-auto  space-y-8 min-h-[650px] max-h-[800px]">
 				{chat.chats.length > 0 &&
 					chat.chats.map((chat, index) => {
 						const plans = [
@@ -184,29 +184,51 @@ export default function AiPlayground(props: {
 								)}
 								{/**show me some hotels to stay in new york from 20 october 2024, to 30 october 2024 */}
 								{chat.hotel_search?.properties && (
-									<div>
+									<div className="flex flex-row overflow-x-auto gap-6 pb-12">
 										{chat.hotel_search.properties.map((hotel) => {
 											return (
 												<div key={hotel.property_token}>
-													<p>
-														{hotel.name} - {hotel.overall_rating} (
-														{hotel.reviews})
-													</p>
-													<p>Ameneties: {hotel.amenities.toString()}</p>
-													<p>Check in: {hotel.check_in_time}</p>
-													<p>Check out: {hotel.check_out_time}</p>
-													<p>Info: {hotel.essential_info?.toString()}</p>
-													<p>
-														Price: {hotel.rate_per_night.lowest} - Total:{" "}
-														{hotel.total_rate.lowest}
-													</p>
-													<Image
-														src={hotel.images[0].thumbnail}
-														alt={hotel.name}
-														width={70}
-														height={70}
-													/>
-													<a href={hotel.link}>Buy</a>
+													<div className="w-[300px] h-[520px] relative overflow-hidden rounded-2xl transition duration-200 group bg-white hover:shadow-xl border border-zinc-100">
+														<div className="w-full h-[200px] aspect-w-16 aspect-h-10 bg-gray-100 rounded-tr-lg rounded-tl-lg overflow-hidden xl:aspect-w-16 xl:aspect-h-10 relative">
+															<Image
+																src={hotel.images[0].thumbnail}
+																alt="thumbnail"
+																width={100}
+																height={100}
+																objectFit="cover"
+																className={`group-hover:scale-95 group-hover:rounded-2xl transform object-cover transition duration-200 h-100 w-full`}
+															/>
+														</div>
+														<div className="flex flex-col  h-[320px]">
+															<div className="p-4 flex-1">
+																<h2 className="font-bold my-4 text-lg text-zinc-700">
+																	{hotel.name}
+																</h2>
+																<h2 className="font-normal my-4 text-sm text-zinc-500">
+																	{hotel.description}
+																</h2>
+															</div>
+															<div className="flex flex-row justify-between items-center p-4 self-baseline w-full">
+																<div>
+																	<span className="text-xs text-gray-500">
+																		Check-in: {hotel.check_in_time}
+																	</span>
+																	<br />
+																	<span className="text-xs text-gray-500">
+																		Check-out: {hotel.check_out_time}
+																	</span>
+																</div>
+																<div>
+																	<div className="text-sm text-center mb-2 font-medium text-slate-700">
+																		{hotel.rate_per_night.lowest} / night
+																	</div>
+																	<div className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
+																		Read More
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
 											);
 										})}
