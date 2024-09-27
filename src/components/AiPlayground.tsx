@@ -184,54 +184,79 @@ export default function AiPlayground(props: {
 								)}
 								{/**show me some hotels to stay in new york from 20 october 2024, to 30 october 2024 */}
 								{chat.hotel_search?.properties && (
-									<div className="flex flex-row overflow-x-auto gap-6 pb-12">
-										{chat.hotel_search.properties.map((hotel) => {
-											return (
-												<div key={hotel.property_token}>
-													<div className="w-[300px] h-[520px] relative overflow-hidden rounded-2xl transition duration-200 group bg-white hover:shadow-xl border border-zinc-100">
-														<div className="w-full h-[200px] aspect-w-16 aspect-h-10 bg-gray-100 rounded-tr-lg rounded-tl-lg overflow-hidden xl:aspect-w-16 xl:aspect-h-10 relative">
-															<Image
-																src={hotel.images[0].thumbnail}
-																alt="thumbnail"
-																width={100}
-																height={100}
-																objectFit="cover"
-																className={`group-hover:scale-95 group-hover:rounded-2xl transform object-cover transition duration-200 h-100 w-full`}
-															/>
-														</div>
-														<div className="flex flex-col  h-[320px]">
-															<div className="p-4 flex-1">
-																<h2 className="font-bold my-4 text-lg text-zinc-700">
-																	{hotel.name}
-																</h2>
-																<h2 className="font-normal my-4 text-sm text-zinc-500">
-																	{hotel.description}
-																</h2>
+									<div>
+										<h1 className="font-semibold text-2xl p-6">
+											{chat.title.replaceAll('"', "")}
+										</h1>
+										<div className="flex flex-row overflow-x-auto gap-6 pb-12 px-8">
+											{chat.hotel_search.properties.map((hotel) => {
+												return (
+													<div key={hotel.property_token}>
+														<div className="w-[340px] h-[540px] relative overflow-hidden rounded-2xl transition duration-200 group bg-white hover:shadow-xl border border-zinc-100">
+															<div className="w-full h-[200px] aspect-w-16 aspect-h-10 bg-gray-100 rounded-tr-lg rounded-tl-lg overflow-hidden xl:aspect-w-16 xl:aspect-h-10 relative">
+																<Image
+																	src={hotel.images[0].thumbnail}
+																	alt="thumbnail"
+																	width={100}
+																	height={100}
+																	objectFit="cover"
+																	className={`group-hover:scale-95 group-hover:rounded-2xl transform object-cover transition duration-200 h-100 w-full`}
+																/>
 															</div>
-															<div className="flex flex-row justify-between items-center p-4 self-baseline w-full">
-																<div>
-																	<span className="text-xs text-gray-500">
-																		Check-in: {hotel.check_in_time}
-																	</span>
-																	<br />
-																	<span className="text-xs text-gray-500">
-																		Check-out: {hotel.check_out_time}
-																	</span>
+															<div className="flex flex-col  h-[340px]">
+																<div className="p-4 flex-1">
+																	<h2 className="font-bold my-4 text-lg text-zinc-700">
+																		{hotel.name}
+																	</h2>
+																	<h2 className="font-normal my-4 text-sm text-zinc-500">
+																		{hotel.description}
+																	</h2>
 																</div>
-																<div>
-																	<div className="text-sm text-center mb-2 font-medium text-slate-700">
-																		{hotel.rate_per_night.lowest} / night
+																<div className="flex flex-row justify-between items-center p-4 self-baseline w-full">
+																	<div>
+																		<div className="flex items-center -ml-1 mb-3">
+																			{new Array(5).fill(0).map((_, index) => (
+																				<svg
+																					className={`w-4 h-4 ms-1 ${
+																						index < hotel.overall_rating
+																							? "text-yellow-300"
+																							: "text-gray-300 dark:text-gray-500" // text-yellow-500
+																					}`}
+																					aria-hidden="true"
+																					xmlns="http://www.w3.org/2000/svg"
+																					fill="currentColor"
+																					viewBox="0 0 22 20"
+																				>
+																					<path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+																				</svg>
+																			))}{" "}
+																			<span className="text-xs ml-2 text-slate-600">
+																				{hotel.overall_rating} ({hotel.reviews})
+																			</span>
+																		</div>
+																		<span className="text-xs text-gray-500">
+																			Check-in: {hotel.check_in_time}
+																		</span>
+																		<br />
+																		<span className="text-xs text-gray-500">
+																			Check-out: {hotel.check_out_time}
+																		</span>
 																	</div>
-																	<div className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
-																		Read More
+																	<div>
+																		<div className="text-sm text-center mb-2 font-medium text-slate-700">
+																			{hotel.rate_per_night.lowest} / night
+																		</div>
+																		<div className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
+																			Read More
+																		</div>
 																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
-												</div>
-											);
-										})}
+												);
+											})}
+										</div>
 									</div>
 								)}
 								{/**show me some restaurants in new york */}
