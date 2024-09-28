@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/popover";
 import { useItinerary } from "@/useItinerary";
 import Link from "next/link";
+import DropArea from "@/components/ant/DropArea";
+import { message } from "antd";
 
 export function DatePicker({ date, setDate }) {
 	return (
@@ -69,7 +71,6 @@ const PassportForm = ({ params }) => {
 		number: "",
 		expiryDate: "",
 		issuanceCountry: "",
-		validityCountry: "",
 		nationality: "",
 		holder: true,
 	});
@@ -99,20 +100,7 @@ const PassportForm = ({ params }) => {
 				}
 			);
 			setGender(myTravelerInfo.gender || "MALE");
-			setPassportData(
-				myTravelerInfo.documents[0] || {
-					documentType: "PASSPORT", // Default to PASSPORT, can be changed to "ID_CARD", "VISA", or "OTHER"
-					birthPlace: "",
-					issuanceLocation: "",
-					issuanceDate: "",
-					number: "",
-					expiryDate: "",
-					issuanceCountry: "",
-					validityCountry: "",
-					nationality: "",
-					holder: true,
-				}
-			);
+			setPassportData({ ...passportData, ...myTravelerInfo.documents[0] });
 			setDateOfBirth(myTravelerInfo.dateOfBirth || "");
 		}
 	}, [myTravelerInfo]);
@@ -138,7 +126,8 @@ const PassportForm = ({ params }) => {
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+		console.log(file);
+		e?.preventDefault();
 		if (!file) {
 			console.error("No file selected");
 			return;
@@ -148,8 +137,9 @@ const PassportForm = ({ params }) => {
 		formData.append("document", file);
 
 		try {
+			message.loading("Uploading file...");
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/ocr`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/passport`,
 				formData,
 				{
 					headers: {
@@ -157,10 +147,28 @@ const PassportForm = ({ params }) => {
 					},
 				}
 			);
+			message.success("File uploaded successfully");
 
-			setPassportData(response.data); // Update the form with the extracted data
+			const data = response.data;
+
+			setPassportData({
+				...passportData,
+				number: data.passport_number,
+				nationality: data.nationality,
+				birthPlace: data.place_of_birth,
+				expiryDate: data.expiration_date,
+				issuanceCountry: data.issuing_country,
+				issuanceDate: data.issuing_date,
+				issuanceLocation: data.issuing_location,
+			});
+			setDateOfBirth(data.date_of_birth);
+			setFirstName(data.first_name);
+			setLastName(data.last_name);
+
+			message.success("Information extracted successfully");
 		} catch (error) {
 			console.error("Error uploading file:", error);
+			message.error("Error uploading file");
 		}
 	};
 
@@ -191,6 +199,8 @@ const PassportForm = ({ params }) => {
 			gender: gender,
 		});
 	};
+
+	console.log(passportData);
 
 	if (authLoading) {
 		return (
@@ -240,37 +250,46 @@ const PassportForm = ({ params }) => {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg my-10"
+			className="max-w-2xl mx-auto p-6 rounded-lg my-10"
 		>
 			<h2 className="text-2xl font-semibold mb-4 text-center">
 				Booking Information
 			</h2>
 
+			<DropArea
+				onDrop={(file) => {
+					console.log(file);
+					setFile(file);
+					handleSubmit(undefined);
+				}}
+			/>
 			<div className="mt-6 grid grid-cols-1 gap-4">
 				{/** Divider */}
-				<div className="flex flex-col">
-					<label htmlFor="number" className="text-gray-700">
-						First Name:
-					</label>
-					<Input
-						id="firstName"
-						type="text"
-						value={firstName}
-						onChange={(e) => setFirstName(e.target.value)}
-						className="mt-1"
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="number" className="text-gray-700">
-						Last Name:
-					</label>
-					<Input
-						id="lastName"
-						type="text"
-						value={lastName}
-						onChange={(e) => setLastName(e.target.value)}
-						className="mt-1"
-					/>
+				<div className="flex flex-row gap-4">
+					<div className="flex flex-col flex-1">
+						<label htmlFor="number" className="text-gray-700">
+							First Name:
+						</label>
+						<Input
+							id="firstName"
+							type="text"
+							value={firstName}
+							onChange={(e) => setFirstName(e.target.value)}
+							className="mt-1"
+						/>
+					</div>
+					<div className="flex flex-col flex-1">
+						<label htmlFor="number" className="text-gray-700">
+							Last Name:
+						</label>
+						<Input
+							id="lastName"
+							type="text"
+							value={lastName}
+							onChange={(e) => setLastName(e.target.value)}
+							className="mt-1"
+						/>
+					</div>
 				</div>
 
 				<div className="flex flex-col">
@@ -307,7 +326,7 @@ const PassportForm = ({ params }) => {
 					</div>
 				</div>
 
-				<div className="border-b border-gray-300"></div>
+				<div className="border-b border-gray-300 my-5"></div>
 				{/* <div className="flex flex-col">
 					<label htmlFor="documentType" className="text-gray-700">
 						Document Type:
@@ -350,92 +369,86 @@ const PassportForm = ({ params }) => {
 						className="mt-1"
 					/>
 				</div>
-				<div className="flex flex-col">
-					<label htmlFor="dateOfBirth" className="text-gray-700">
-						Date of Birth:
-					</label>
-					<Input
-						id="dateOfBirth"
-						type="text"
-						value={dateOfBirth}
-						onChange={(e) => setDateOfBirth(e.target.value)}
-						placeholder="YYYY-MM-DD"
-						className="mt-1"
-					/>
+				<div className="flex flex-row gap-4">
+					<div className="flex flex-col flex-1">
+						<label htmlFor="dateOfBirth" className="text-gray-700">
+							Date of Birth:
+						</label>
+						<Input
+							id="dateOfBirth"
+							type="text"
+							value={dateOfBirth}
+							onChange={(e) => setDateOfBirth(e.target.value)}
+							placeholder="YYYY-MM-DD"
+							className="mt-1"
+						/>
+					</div>
+					<div className="flex flex-col flex-1">
+						<label htmlFor="birthPlace" className="text-gray-700">
+							Place of Birth:
+						</label>
+						<Input
+							id="birthPlace"
+							type="text"
+							value={passportData.birthPlace}
+							onChange={handleInputChange}
+							className="mt-1"
+						/>
+					</div>
 				</div>
-				<div className="flex flex-col">
-					<label htmlFor="birthPlace" className="text-gray-700">
-						Place of Birth:
-					</label>
-					<Input
-						id="birthPlace"
-						type="text"
-						value={passportData.birthPlace}
-						onChange={handleInputChange}
-						className="mt-1"
-					/>
+				<div className="flex flex-row gap-4">
+					<div className="flex flex-col flex-1">
+						<label htmlFor="issuanceDate" className="text-gray-700">
+							Date of Issue:
+						</label>
+						<Input
+							id="issuanceDate"
+							type="text"
+							value={passportData.issuanceDate}
+							onChange={handleInputChange}
+							className="mt-1"
+							placeholder="YYYY-MM-DD"
+						/>
+					</div>
+					<div className="flex flex-col flex-1">
+						<label htmlFor="expiryDate" className="text-gray-700">
+							Date of Expiry:
+						</label>
+						<Input
+							id="expiryDate"
+							type="text"
+							value={passportData.expiryDate}
+							onChange={handleInputChange}
+							className="mt-1"
+							placeholder="YYYY-MM-DD"
+						/>
+					</div>
 				</div>
-				<div className="flex flex-col">
-					<label htmlFor="issuanceDate" className="text-gray-700">
-						Date of Issue:
-					</label>
-					<Input
-						id="issuanceDate"
-						type="text"
-						value={passportData.issuanceDate}
-						onChange={handleInputChange}
-						className="mt-1"
-						placeholder="YYYY-MM-DD"
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="expiryDate" className="text-gray-700">
-						Date of Expiry:
-					</label>
-					<Input
-						id="expiryDate"
-						type="text"
-						value={passportData.expiryDate}
-						onChange={handleInputChange}
-						className="mt-1"
-						placeholder="YYYY-MM-DD"
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="issuanceLocation" className="text-gray-700">
-						Issuance Location:
-					</label>
-					<Input
-						id="issuanceLocation"
-						type="text"
-						value={passportData.issuanceLocation}
-						onChange={handleInputChange}
-						className="mt-1"
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="issuanceCountry" className="text-gray-700">
-						Issuance Country:
-					</label>
-					<Input
-						id="issuanceCountry"
-						type="text"
-						value={passportData.issuanceCountry}
-						onChange={handleInputChange}
-						className="mt-1"
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="validityCountry" className="text-gray-700">
-						Validity Country:
-					</label>
-					<Input
-						id="validityCountry"
-						type="text"
-						value={passportData.validityCountry}
-						onChange={handleInputChange}
-						className="mt-1"
-					/>
+				<div className="flex flex-row gap-4">
+					<div className="flex flex-col flex-1">
+						<label htmlFor="issuanceLocation" className="text-gray-700">
+							Issuance Location:
+						</label>
+						<Input
+							id="issuanceLocation"
+							type="text"
+							value={passportData.issuanceLocation}
+							onChange={handleInputChange}
+							className="mt-1"
+						/>
+					</div>
+					<div className="flex flex-col flex-1">
+						<label htmlFor="issuanceCountry" className="text-gray-700">
+							Issuance Country:
+						</label>
+						<Input
+							id="issuanceCountry"
+							type="text"
+							value={passportData.issuanceCountry}
+							onChange={handleInputChange}
+							className="mt-1"
+						/>
+					</div>
 				</div>
 
 				{/* <div className="flex flex-col">
@@ -456,23 +469,13 @@ const PassportForm = ({ params }) => {
 					/>
 				</div> */}
 
-				<div className="flex items-center justify-center gap-x-3">
-					<Button onClick={handleButtonClick} className="">
-						Upload Passport
-					</Button>
-					<Input
-						type="file"
-						ref={fileInputRef}
-						onChange={handleFileChange}
-						className="hidden"
-					/>
-					<Button type="submit" className="">
-						Extract Information
-					</Button>
-				</div>
-				<Button onClick={handleSave}>Save Details</Button>
+				<Button className="py-6 mt-10 rounded-full" onClick={handleSave}>
+					Save Details
+				</Button>
 				<Link href={`/itinerary/${id}/pricing`} passHref>
-					<Button className="w-full">Go to Pricing</Button>
+					<Button className="py-6 rounded-full w-full bg-transparent border text-block hover:bg-slate-100">
+						Go to Pricing
+					</Button>
 				</Link>
 			</div>
 		</form>

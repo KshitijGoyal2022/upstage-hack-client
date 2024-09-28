@@ -1,3 +1,5 @@
+"use client";
+
 import { AmadeusActivityOffer } from "@/socket/chat";
 import Image from "next/image";
 import React from "react";
