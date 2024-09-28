@@ -87,9 +87,9 @@ export default function HotelCard(props: {
 							</div>
 							<div
 								onClick={() => props.onSelect(hotel)}
-								className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs"
+								className="relative cursor-pointer z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs"
 							>
-								{props.selected ? "Selected" : "Select"}
+								{props.selected ? "Remove" : "Select"}
 							</div>
 						</div>
 					</div>

@@ -32,6 +32,8 @@ import {
 } from "@/types/serp";
 import { googleApi } from "@/google_api";
 import Itinerary from "@/app/itinerary/[id]/page";
+import { BlurredModal } from "./ui/blurred-modal";
+import { message as amessage } from "antd";
 
 export const hotel_tags_set = new Set([
 	"lodging",
@@ -70,6 +72,8 @@ export default function AiPlayground(props: {
 		React.useState<GoogleFlightData | null>(null);
 	const [returnFlightsLoading, setReturnFlightsLoading] =
 		React.useState<boolean>(false);
+	const [openReturnFlights, setOpenReturnFlights] =
+		React.useState<boolean>(false);
 
 	const chat = useChat(props.itineraryId, socket, viewRef);
 
@@ -85,26 +89,31 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.saveOutboundFlight(props.itineraryId, flight, date);
 		props?.onRefreshItinerary();
+		amessage.success("Outbound added to itinerary");
 	};
 
 	const callbackSaveRestaurant = async (restaurant: GoogleFoodResult) => {
 		await googleApi.saveGoogleRestaurant(props.itineraryId, restaurant);
 		props?.onRefreshItinerary();
+		amessage.success(`${restaurant.title} added to itinerary`);
 	};
 
 	const callbackRemoveRestaurant = async (restaurant: GoogleFoodResult) => {
 		await googleApi.deleteGoogleRestaurant(props.itineraryId, restaurant.title);
 		props?.onRefreshItinerary();
+		amessage.success(`${restaurant.title} removed from itinerary`);
 	};
 
 	const callbackSaveHotel = async (hotel: GoogleHotelProperty) => {
 		await googleApi.saveHotel(props.itineraryId, hotel);
 		props?.onRefreshItinerary();
+		amessage.success(`${hotel.name} added to itinerary`);
 	};
 
 	const callbackRemoveHotel = async (hotel: GoogleHotelProperty) => {
 		await googleApi.deleteGoogleHotel(props.itineraryId, hotel.property_token);
 		props?.onRefreshItinerary();
+		amessage.success(`${hotel.name} removed from itinerary`);
 	};
 
 	const callbackSaveTopSights = async (
@@ -112,6 +121,7 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.saveTopSights(props.itineraryId, topSights);
 		props?.onRefreshItinerary();
+		amessage.success(`${topSights.title} added to itinerary`);
 	};
 
 	const callbackRemoveTopSights = async (
@@ -119,6 +129,7 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.deleteGoogleTopSights(props.itineraryId, topSights.title);
 		props?.onRefreshItinerary();
+		amessage.success(`${topSights.title} removed from itinerary`);
 	};
 
 	const callbackSaveLocalResults = async (
@@ -126,6 +137,7 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.saveLocalResults(props.itineraryId, localResults);
 		props?.onRefreshItinerary();
+		amessage.success(`${localResults.title} added to itinerary`);
 	};
 
 	const callbackRemoveLocalResults = async (
@@ -136,6 +148,7 @@ export default function AiPlayground(props: {
 			localResults.place_id
 		);
 		props?.onRefreshItinerary();
+		amessage.success(`${localResults.title} removed from itinerary`);
 	};
 
 	const callbackSaveShoppingResults = async (
@@ -143,6 +156,7 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.saveGoogleShopping(props.itineraryId, shoppingResults);
 		props?.onRefreshItinerary();
+		amessage.success(`${shoppingResults.title} added to itinerary`);
 	};
 
 	const callbackRemoveShoppingResults = async (
@@ -153,6 +167,7 @@ export default function AiPlayground(props: {
 			shoppingResults.title
 		);
 		props?.onRefreshItinerary();
+		amessage.success(`${shoppingResults.title} removed from itinerary`);
 	};
 
 	const callbackSaveEvent = async (
@@ -160,6 +175,7 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.saveGoogleEvents(props.itineraryId, event);
 		props?.onRefreshItinerary();
+		amessage.success(`${event.title} added to itinerary`);
 	};
 
 	const callbackRemoveEvent = async (
@@ -167,6 +183,7 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.deleteGoogleEvents(props.itineraryId, event.title);
 		props?.onRefreshItinerary();
+		amessage.success(`${event.title} removed from itinerary`);
 	};
 
 	const callbackGetReturnFlights = async (params: {
@@ -178,8 +195,9 @@ export default function AiPlayground(props: {
 	}) => {
 		setReturnFlightsLoading(true);
 		const response = await googleApi.getReturnFlights(params);
-		setReturnFlights(response);
+		setReturnFlights(response?.flights);
 		setReturnFlightsLoading(false);
+		setOpenReturnFlights(true);
 	};
 
 	const callbackSaveReturnFlight = async (
@@ -188,6 +206,8 @@ export default function AiPlayground(props: {
 	) => {
 		await googleApi.saveReturnFlight(props.itineraryId, flight, date);
 		props?.onRefreshItinerary();
+		setOpenReturnFlights(false);
+		amessage.success("Return added to itinerary");
 	};
 
 	const isAdmin = props.itinerary?.admin?.provider?.id === user?.sub;
@@ -204,6 +224,50 @@ export default function AiPlayground(props: {
 
 	return (
 		<div className="col-span-7 h-full flex flex-col">
+			<BlurredModal
+				width="width-1/2"
+				open={openReturnFlights}
+				onClose={() => setOpenReturnFlights(false)}
+			>
+				{returnFlights && (
+					<div className="flex flex-col gap-4">
+						<h1 className="font-semibold text-2xl p-6">Return Flights</h1>
+						<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
+							{returnFlights?.best_flights?.map((flight, index) => {
+								console.log(flight);
+								return (
+									<FlightCard
+										flight={flight}
+										key={index}
+										isAdmin={isAdmin}
+										isSelected={
+											flight?.id === props.itinerary?.g_flights?.[1]?.id
+										}
+										currency={
+											returnFlights.search_parameters?.currency || "USD"
+										}
+										onPress={() => {
+											callbackSaveReturnFlight(
+												{
+													...flight,
+													currency:
+														returnFlights.search_parameters?.currency || "USD",
+												},
+												returnFlights.search_parameters?.outbound_date
+											);
+										}}
+									/>
+								);
+							})}
+						</div>
+					</div>
+				)}
+				{returnFlightsLoading && (
+					<div className="flex items-center justify-center">
+						<div className="animate-spin rounded-full h-24 w-24 border-b-2 border-gray-900"></div>
+					</div>
+				)}
+			</BlurredModal>
 			<div
 				className="flex-1 overflow-y-auto  space-y-8 min-h-[650px] max-h-[800px]"
 				ref={viewRef}
@@ -271,6 +335,7 @@ export default function AiPlayground(props: {
 																	chat.flight_offer_search.search_parameters
 																		?.return_date
 																);
+															setOpenReturnFlights(true);
 														}}
 													/>
 												);

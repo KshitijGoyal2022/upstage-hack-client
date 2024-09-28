@@ -64,12 +64,6 @@ const findTopSight = (id: string, wholeItinerary: any) => {
 	return topSight;
 };
 
-const countAllEvents = (itinerary: Itinerary[]) => {
-	return itinerary.reduce((acc, day) => {
-		return acc + day.events.length;
-	}, 0);
-};
-
 export default function ItineraryRender(props: {
 	open: boolean;
 	itinerary: Itinerary[];
@@ -77,7 +71,6 @@ export default function ItineraryRender(props: {
 	wholeItinerary: any;
 }) {
 	const { open, itinerary } = props;
-	const totalEvents = countAllEvents(itinerary);
 
 	let c = 0;
 	return (
