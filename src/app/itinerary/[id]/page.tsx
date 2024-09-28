@@ -12,18 +12,16 @@ import Link from "next/link";
 
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
-export function MagicButton() {
+export function MagicButton({ text = "Magic" }) {
 	return (
-		<div className="flex justify-center text-center">
-			<HoverBorderGradient
-				containerClassName="rounded-full"
-				as="button"
-				className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
-			>
-				<AceternityLogo />
-				<span>Magic</span>
-			</HoverBorderGradient>
-		</div>
+		<HoverBorderGradient
+			containerClassName="rounded-full"
+			as="button"
+			className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+		>
+			<AceternityLogo />
+			<span>{text}</span>
+		</HoverBorderGradient>
 	);
 }
 
@@ -31,6 +29,8 @@ import { MultiStepLoader as Loader } from "@/components/ui/multi-step-loader";
 import { IconSquareRoundedX } from "@tabler/icons-react";
 import { set } from "date-fns";
 import { getMagicItinerary } from "@/apis";
+import { BlurredModal } from "@/components/ui/blurred-modal";
+import ItineraryRender from "@/components/itinerary-render";
 
 const loadingStates = [
 	{
@@ -60,7 +60,8 @@ export function MultiStepLoaderDemo(props: {
 			<Loader
 				loadingStates={loadingStates}
 				loading={props.loading}
-				duration={4000}
+				duration={5000}
+				loop={false}
 			/>
 
 			{/* The buttons are for demo only, remove it in your actual code ⬇️ */}
@@ -107,6 +108,7 @@ const Itinerary = ({ params }: any) => {
 
 	const [magicItinerary, setMagicItinerary] = React.useState<any>(null);
 	const [magicLoading, setMagicLoading] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
 
 	const { itinerary, isLoading, onRefreshItinerary } = useItinerary(id);
 
@@ -116,6 +118,7 @@ const Itinerary = ({ params }: any) => {
 
 		if (itinerary) {
 			setMagicItinerary(itinerary);
+			setOpen(true);
 		}
 		setMagicLoading(false);
 	};
@@ -171,6 +174,12 @@ const Itinerary = ({ params }: any) => {
 
 	return (
 		<div className="grid grid-cols-12 max-h-max relative">
+			<ItineraryRender
+				open={(!!magicItinerary || itinerary?.magic) && open}
+				itinerary={magicItinerary || itinerary?.magic}
+				onClose={() => setOpen(false)}
+				wholeItinerary={itinerary}
+			/>
 			{/* Top Bar with Buttons */}
 			<div className="col-span-12 flex justify-end items-center p-6 border-b bg-white sticky top-0 z-10 border-t">
 				<div className="flex space-x-4">
@@ -181,10 +190,17 @@ const Itinerary = ({ params }: any) => {
 					<Link href={`${id}/preview`} passHref>
 						<Button className="w-40">Preview</Button>
 					</Link>
-					<MultiStepLoaderDemo
-						loading={magicLoading}
-						onMagicClick={callbackMagicItinerary}
-					/>
+					{!magicItinerary && !itinerary?.magic && (
+						<MultiStepLoaderDemo
+							loading={magicLoading}
+							onMagicClick={callbackMagicItinerary}
+						/>
+					)}
+					{itinerary?.magic && (
+						<button onClick={() => setOpen(true)}>
+							<MagicButton text="Open" />
+						</button>
+					)}
 				</div>
 			</div>
 

@@ -248,6 +248,7 @@ export function FlightCard({
 
     </>
   );
+
 }
 
 import { Skeleton } from '@/components/ui/skeleton';

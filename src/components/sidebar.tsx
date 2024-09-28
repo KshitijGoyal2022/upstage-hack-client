@@ -44,11 +44,19 @@ const Sidebar = () => {
 			<ul className="space-y-2">
 				{itineraries.map((itinerary, index) => {
 					const hasTitle = itinerary?.arrival && itinerary?.departure;
+					const airlineTitle =
+						"Trip to " +
+						itinerary?.g_flights?.[0]?.flights?.[0]?.departure_airport?.name +
+						" - " +
+						itinerary?.g_flights?.[0]?.flights?.[0]?.arrival_airport?.name;
 					const title = hasTitle
 						? itinerary.departure + " - " + itinerary.arrival
+						: itinerary?.g_flights?.[0]?.flights?.[0]?.departure_airport?.name
+						? airlineTitle
 						: itinerary.title;
 
-					const airlineImage = itinerary.flight?.airline_logo || "";
+					const airlineImage =
+						itinerary.g_flights?.[0]?.flights?.[0]?.airline_logo;
 					return (
 						<li key={itinerary._id}>
 							<Link href={`/itinerary/${itinerary._id}`} passHref>

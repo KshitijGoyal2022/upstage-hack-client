@@ -1,11 +1,15 @@
 "use client";
+import HotelCard from "@/components/render/HotelCard";
+import RestaurantCard from "@/components/render/RestaurantCard";
 import { FlightCard } from "@/components/renders/RenderFlights";
-import { HotelCard } from "@/components/renders/RenderHotels";
 import RenderPOIMap from "@/components/renders/RenderPOIMap";
 import { ActivityCard } from "@/components/renders/RenderPointOfInterests";
+import { googleApi } from "@/google_api";
+import { GoogleFoodResult, GoogleHotelProperty } from "@/types/serp";
 import { useItinerary } from "@/useItinerary";
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
+import { message as amessage } from "antd";
 
 export const restaurant_tags_set = new Set([
 	"restaurant",
@@ -59,8 +63,20 @@ export const restaurant_tags_set = new Set([
 function PreviewPage({ params }: any) {
 	const { user, isLoading: authLoading } = useAuth0();
 	const { id } = params;
+	const { itinerary, isLoading, onRefreshItinerary } = useItinerary(id);
 
-	const { itinerary, isLoading } = useItinerary(id);
+	const callbackRemoveRestaurant = async (restaurant: GoogleFoodResult) => {
+		await googleApi.deleteGoogleRestaurant(id, restaurant.title);
+		onRefreshItinerary();
+		amessage.success(`Removed ${restaurant.title} from your itinerary`);
+	};
+
+	const callbackRemoveHotel = async (hotel: GoogleHotelProperty) => {
+		await googleApi.deleteGoogleHotel(id, hotel.property_token);
+		onRefreshItinerary();
+		amessage.success(`Removed ${hotel.name} from your itinerary`);
+	};
+
 	if (authLoading) {
 		return (
 			<div className="flex items-center justify-center h-screen">
@@ -107,78 +123,64 @@ function PreviewPage({ params }: any) {
 	}
 	const isAdmin = itinerary?.admin?.provider?.id === user?.sub;
 
-	const flightOffer = itinerary?.flight;
-	const hotelOffers = itinerary?.hotels;
-	const activityOffers = itinerary?.activities;
-
-	const restaurantsOffers = activityOffers.filter((activity) =>
-		activity.properties.poi_category.some((category) =>
-			restaurant_tags_set.has(category)
-		)
-	);
-	const activitiesWithoutRestaurants = activityOffers.filter(
-		(activity) =>
-			!activity.properties.poi_category.some((category) =>
-				restaurant_tags_set.has(category)
-			)
-	);
-
 	return (
 		<div className="flex flex-row  m-12 gap-8">
-			{flightOffer && (
+			{itinerary?.g_flights?.[0] && (
 				<div>
-					<h2 className="text-2xl font-semibold mb-4">Your Flights</h2>
+					<h2 className="text-2xl font-semibold mb-4">Your Outbound Flight</h2>
 					<FlightCard
-						flight={flightOffer}
+						flight={itinerary?.g_flights?.[0]}
 						isAdmin={isAdmin}
 						isSelected
-						currency={flightOffer?.currency || "USD"}
+						currency={itinerary?.g_flights?.[0]?.currency || "USD"}
 					/>
 				</div>
 			)}
-
-			{hotelOffers.length > 0 && (
+			{itinerary?.g_flights?.[1] && (
+				<div>
+					<h2 className="text-2xl font-semibold mb-4">Your Return Flight</h2>
+					<FlightCard
+						flight={itinerary?.g_flights?.[1]}
+						isAdmin={isAdmin}
+						isSelected
+						currency={itinerary?.g_flights?.[1]?.currency || "USD"}
+					/>
+				</div>
+			)}
+			{itinerary?.g_hotels?.length > 0 && (
 				<div>
 					<h2 className="text-2xl font-semibold mb-4">Your Hotels</h2>
-					<RenderPOIMap activities={hotelOffers} />
-					{hotelOffers.map((hotel) => (
-						<ActivityCard
-							activity={hotel}
-							key={hotel.properties.mapbox_id}
-							isAdmin={isAdmin}
-							isSelected
-						/>
-					))}
-				</div>
-			)}
-			{activitiesWithoutRestaurants.length > 0 && (
-				<div>
-					<h2 className="text-2xl font-semibold mb-4">Your Activities</h2>
-					<>
-						<RenderPOIMap activities={activitiesWithoutRestaurants} />
-						{activitiesWithoutRestaurants.map((activity) => (
-							<ActivityCard
-								activity={activity}
-								key={activity.properties.mapbox_id}
-								isAdmin={isAdmin}
-								isSelected
+					<div className=" flex flex-col gap-4">
+						{itinerary.g_hotels.map((hotel) => (
+							<HotelCard
+								hotel={hotel}
+								key={hotel.id}
+								selected
+								onSelect={() => {
+									callbackRemoveHotel(hotel);
+								}}
 							/>
 						))}
-					</>
+					</div>
 				</div>
 			)}
-			{restaurantsOffers.length > 0 && (
+			{itinerary?.g_restaurants?.length > 0 && (
 				<div>
-					<h2 className="text-2xl font-semibold mb-4">Your Dinings</h2>
-					<RenderPOIMap activities={restaurantsOffers} />
-					{restaurantsOffers.map((activity) => (
-						<ActivityCard
-							activity={activity}
-							key={activity.properties.mapbox_id}
-							isAdmin={isAdmin}
-							isSelected
-						/>
-					))}
+					<h2 className="text-2xl font-semibold mb-4 flex items-center">
+						Your Restaurants{" "}
+						<span className="text-sm font-normal ml-4">(click to remove)</span>
+					</h2>
+					<div className=" flex flex-col gap-4">
+						{itinerary.g_restaurants.map((restaurant) => (
+							<RestaurantCard
+								restaurant={restaurant}
+								key={restaurant.id}
+								onSelect={() => {
+									callbackRemoveRestaurant(restaurant);
+								}}
+							/>
+						))}
+					</div>
 				</div>
 			)}
 		</div>
