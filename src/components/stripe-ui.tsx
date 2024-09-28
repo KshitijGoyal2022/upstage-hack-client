@@ -6,6 +6,7 @@ interface StripeCheckoutProps {
   flightName: string;
   flightPrice: number;
   flightImage: string;
+  itineraryId: string;
 }
 
 // Load Stripe outside of component render to avoid creating a new instance on every render.
@@ -13,7 +14,7 @@ const stripePromise = loadStripe(
   `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
 );
 
-const StripeCheckout = ({ flightName, flightPrice }: StripeCheckoutProps) => {
+const StripeCheckout = ({ flightName, flightPrice, flightImage, itineraryId }: StripeCheckoutProps) => {
   const handleCheckout = React.useCallback(async () => {
     // Fetch the session ID from your backend
     const response = await fetch(
@@ -23,7 +24,7 @@ const StripeCheckout = ({ flightName, flightPrice }: StripeCheckoutProps) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ flightName, flightPrice }),
+        body: JSON.stringify({ flightName, flightPrice, flightImage, itineraryId }),
       }
     );
     const { sessionId } = await response.json();
@@ -38,7 +39,7 @@ const StripeCheckout = ({ flightName, flightPrice }: StripeCheckoutProps) => {
     if (error) {
       console.error('Error redirecting to checkout:', error);
     }
-  }, [flightName, flightPrice]);
+  }, [flightName, flightPrice, flightImage, itineraryId]);
 
   return (
     <div>
