@@ -96,7 +96,7 @@ const saveGoogleRestaurant = async (
 	restaurants: GoogleFoodResult
 ) => {
 	const response = await axios.post(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/restaurant`,
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/restaurants`,
 		{
 			restaurants,
 		}
@@ -149,20 +149,20 @@ const deleteGoogleReturnFlight = async (itineraryId: string) => {
 	return response.data;
 };
 
-const deleteGoogleHotel = async (itineraryId: string, hotelId: string) => {
+const deleteGoogleHotel = async (
+	itineraryId: string,
+	property_token: string
+) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/hotel/${hotelId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/hotel/${property_token}`
 	);
 
 	return response.data;
 };
 
-const deleteGoogleTopSights = async (
-	itineraryId: string,
-	topSightsId: string
-) => {
+const deleteGoogleTopSights = async (itineraryId: string, title: string) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/top-sights/${topSightsId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/top-sights/${title}`
 	);
 
 	return response.data;
@@ -170,40 +170,34 @@ const deleteGoogleTopSights = async (
 
 const deleteGoogleLocalResults = async (
 	itineraryId: string,
-	localResultsId: string
+	placeId: string
 ) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/local-results/${localResultsId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/local-results/${placeId}`
 	);
 
 	return response.data;
 };
 
-const deleteGoogleRestaurant = async (
-	itineraryId: string,
-	restaurantId: string
-) => {
+const deleteGoogleRestaurant = async (itineraryId: string, title: string) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/restaurant/${restaurantId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/restaurants/${title}`
 	);
 
 	return response.data;
 };
 
-const deleteGoogleShopping = async (
-	itineraryId: string,
-	shoppingId: string
-) => {
+const deleteGoogleShopping = async (itineraryId: string, title: string) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/shopping/${shoppingId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/shopping/${title}`
 	);
 
 	return response.data;
 };
 
-const deleteGoogleEvents = async (itineraryId: string, eventsId: string) => {
+const deleteGoogleEvents = async (itineraryId: string, title: string) => {
 	const response = await axios.delete(
-		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/events/${eventsId}`
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/events/${title}`
 	);
 
 	return response.data;

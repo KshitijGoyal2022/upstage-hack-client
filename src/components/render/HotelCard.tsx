@@ -1,8 +1,13 @@
 import { GoogleHotelProperty } from "@/types/serp";
 import Image from "next/image";
 
-export default function HotelCard(props: { hotel: GoogleHotelProperty }) {
+export default function HotelCard(props: {
+	hotel: GoogleHotelProperty;
+	selected?: boolean;
+	onSelect: (hotel: GoogleHotelProperty) => void;
+}) {
 	const { hotel } = props;
+
 	return (
 		<div key={hotel.property_token}>
 			<div className="w-[340px] h-[540px] relative overflow-hidden rounded-2xl transition duration-200 group bg-white hover:shadow-xl border border-zinc-100">
@@ -80,8 +85,11 @@ export default function HotelCard(props: { hotel: GoogleHotelProperty }) {
 							<div className="text-sm text-center mb-2 font-medium text-slate-700">
 								{hotel.rate_per_night.lowest} / night
 							</div>
-							<div className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs">
-								Read More
+							<div
+								onClick={() => props.onSelect(hotel)}
+								className="relative z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs"
+							>
+								{props.selected ? "Selected" : "Select"}
 							</div>
 						</div>
 					</div>

@@ -1,14 +1,21 @@
 import { GoogleFoodResult } from "@/types/serp";
+import clsx from "clsx";
 import Image from "next/image";
 
 export default function RestaurantCard(props: {
 	restaurant: GoogleFoodResult;
+	selected?: boolean;
+	onSelect: (restaurant: GoogleFoodResult) => void;
 }) {
 	const { restaurant } = props;
 	return (
 		<div
-			className="flex w-[500px] flex-row gap-4 border-box p-3 hover:bg-slate-50 cursor-pointer rounded-2xl"
+			className={clsx(
+				"flex w-[500px] flex-row gap-4 border-box p-3 hover:bg-slate-50 cursor-pointer rounded-2xl",
+				props.selected ? "bg-slate-100" : "bg-white"
+			)}
 			style={{ flex: "0 0 auto" }}
+			onClick={() => props.onSelect(restaurant)}
 		>
 			<Image
 				src={restaurant.images[0]}

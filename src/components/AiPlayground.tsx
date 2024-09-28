@@ -23,7 +23,13 @@ import { generateFlightOfferUniqueId } from "@/helpers";
 import Image from "next/image";
 import HotelCard from "./render/HotelCard";
 import RestaurantCard from "./render/RestaurantCard";
-import { GoogleFlightData } from "@/types/serp";
+import {
+	GoogleEventsResult,
+	GoogleFlightData,
+	GoogleFoodResult,
+	GoogleHotelProperty,
+	GooglePlacesResult,
+} from "@/types/serp";
 import { googleApi } from "@/google_api";
 import Itinerary from "@/app/itinerary/[id]/page";
 
@@ -79,6 +85,88 @@ export default function AiPlayground(props: {
 		props?.onRefreshItinerary();
 	};
 
+	const callbackSaveRestaurant = async (restaurant: GoogleFoodResult) => {
+		await googleApi.saveGoogleRestaurant(props.itineraryId, restaurant);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveRestaurant = async (restaurant: GoogleFoodResult) => {
+		await googleApi.deleteGoogleRestaurant(props.itineraryId, restaurant.title);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveHotel = async (hotel: GoogleHotelProperty) => {
+		await googleApi.saveHotel(props.itineraryId, hotel);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveHotel = async (hotel: GoogleHotelProperty) => {
+		await googleApi.deleteGoogleHotel(props.itineraryId, hotel.property_token);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveTopSights = async (
+		topSights: GooglePlacesResult["top_sights"]["sights"][number]
+	) => {
+		await googleApi.saveTopSights(props.itineraryId, topSights);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveTopSights = async (
+		topSights: GooglePlacesResult["top_sights"]["sights"][number]
+	) => {
+		await googleApi.deleteGoogleTopSights(props.itineraryId, topSights.title);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveLocalResults = async (
+		localResults: GooglePlacesResult["local_results"]["places"][number]
+	) => {
+		await googleApi.saveLocalResults(props.itineraryId, localResults);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveLocalResults = async (
+		localResults: GooglePlacesResult["local_results"]["places"][number]
+	) => {
+		await googleApi.deleteGoogleLocalResults(
+			props.itineraryId,
+			localResults.place_id
+		);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveShoppingResults = async (
+		shoppingResults: GooglePlacesResult["shopping_results"][number]
+	) => {
+		await googleApi.saveGoogleShopping(props.itineraryId, shoppingResults);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveShoppingResults = async (
+		shoppingResults: GooglePlacesResult["shopping_results"][number]
+	) => {
+		await googleApi.deleteGoogleShopping(
+			props.itineraryId,
+			shoppingResults.title
+		);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveEvent = async (
+		event: GoogleEventsResult["events_results"][number]
+	) => {
+		await googleApi.saveGoogleEvents(props.itineraryId, event);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveEvent = async (
+		event: GoogleEventsResult["events_results"][number]
+	) => {
+		await googleApi.deleteGoogleEvents(props.itineraryId, event.title);
+		props?.onRefreshItinerary();
+	};
+
 	const callbackGetReturnFlights = async (params: {
 		departure_id: string;
 		arrival_id: string;
@@ -91,6 +179,14 @@ export default function AiPlayground(props: {
 		setReturnFlights(response);
 		setReturnFlightsLoading(false);
 	};
+
+	const callbackSaveReturnFlight = async (
+		flight: GoogleFlightData["best_flights"][number]
+	) => {
+		await googleApi.saveReturnFlight(props.itineraryId, flight);
+		props?.onRefreshItinerary();
+	};
+
 	const isAdmin = props.itinerary?.admin?.provider?.id === user?.sub;
 
 	/**
@@ -155,6 +251,9 @@ export default function AiPlayground(props: {
 								{chat.places_search?.top_sights && (
 									<div>
 										{chat.places_search.top_sights?.sights?.map((activity) => {
+											const selected = props.itinerary?.g_top_sights?.find(
+												(h) => h.title === activity.title
+											);
 											return (
 												<div key={activity.title}>
 													<p>
@@ -169,6 +268,15 @@ export default function AiPlayground(props: {
 														width={70}
 														height={70}
 													/>
+													<Button
+														onClick={() =>
+															selected
+																? callbackRemoveTopSights(activity)
+																: callbackSaveTopSights(activity)
+														}
+													>
+														{selected ? "Remove" : "Add"}
+													</Button>
 												</div>
 											);
 										})}
@@ -180,6 +288,9 @@ export default function AiPlayground(props: {
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
 											{chat?.event_search?.events_results?.map((event) => {
+												const selected = props.itinerary?.g_events?.find(
+													(h) => h.title === event.title
+												);
 												return (
 													<div key={event.title}>
 														<p>
@@ -204,6 +315,15 @@ export default function AiPlayground(props: {
 															width={70}
 															height={70}
 														/>
+														<Button
+															onClick={() =>
+																selected
+																	? callbackRemoveEvent(event)
+																	: callbackSaveEvent(event)
+															}
+														>
+															{selected ? "Remove" : "Add"}
+														</Button>
 													</div>
 												);
 											})}
@@ -218,8 +338,20 @@ export default function AiPlayground(props: {
 										</h1>
 										<div className="flex flex-row overflow-x-auto gap-6 pb-12 px-8">
 											{chat.hotel_search.properties.map((hotel) => {
+												const selected = props.itinerary?.g_hotels?.find(
+													(h) => h.property_token === hotel.property_token
+												);
 												return (
-													<HotelCard hotel={hotel} key={hotel.property_token} />
+													<HotelCard
+														hotel={hotel}
+														selected={selected}
+														key={hotel.property_token}
+														onSelect={(hotel) => {
+															selected
+																? callbackRemoveHotel(hotel)
+																: callbackSaveHotel(hotel);
+														}}
+													/>
 												);
 											})}
 										</div>
@@ -237,8 +369,22 @@ export default function AiPlayground(props: {
 													return (
 														<div className="space-y-8">
 															{pair.map((restaurant) => {
+																const selected =
+																	props.itinerary?.g_restaurants?.find(
+																		(h) =>
+																			h.restaurant_id ===
+																			restaurant.restaurant_id
+																	);
 																return (
-																	<RestaurantCard restaurant={restaurant} />
+																	<RestaurantCard
+																		selected={selected}
+																		restaurant={restaurant}
+																		onSelect={(restaurant) => {
+																			selected
+																				? callbackRemoveRestaurant(restaurant)
+																				: callbackSaveRestaurant(restaurant);
+																		}}
+																	/>
 																);
 															})}
 														</div>
@@ -252,6 +398,9 @@ export default function AiPlayground(props: {
 								{chat.places_search?.shopping_results && (
 									<div>
 										{chat?.places_search?.shopping_results?.map((activity) => {
+											const selected = props.itinerary?.g_shopping?.find(
+												(h) => h.title === activity.title
+											);
 											return (
 												<div key={activity.title}>
 													<p>
@@ -266,6 +415,16 @@ export default function AiPlayground(props: {
 														height={70}
 													/>
 													<a href={activity.link}>buy</a>
+
+													<Button
+														onClick={() =>
+															selected
+																? callbackRemoveShoppingResults(activity)
+																: callbackSaveShoppingResults(activity)
+														}
+													>
+														{selected ? "Remove" : "Add"}
+													</Button>
 												</div>
 											);
 										})}
@@ -277,6 +436,9 @@ export default function AiPlayground(props: {
 									<div>
 										{chat.places_search.local_results?.places?.map(
 											(activity) => {
+												const selected = props.itinerary?.g_local_results?.find(
+													(h) => h.place_id === activity.place_id
+												);
 												return (
 													<div key={activity.place_id}>
 														<p>
@@ -294,6 +456,15 @@ export default function AiPlayground(props: {
 															width={70}
 															height={70}
 														/>
+														<Button
+															onClick={() =>
+																selected
+																	? callbackRemoveLocalResults(activity)
+																	: callbackSaveLocalResults(activity)
+															}
+														>
+															{selected ? "Remove" : "Add"}
+														</Button>
 													</div>
 												);
 											}
