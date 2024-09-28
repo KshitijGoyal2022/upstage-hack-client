@@ -224,11 +224,7 @@ export default function AiPlayground(props: {
 
 	return (
 		<div className="col-span-7 h-full flex flex-col">
-			<BlurredModal
-				width="width-1/2"
-				open={openReturnFlights}
-				onClose={() => setOpenReturnFlights(false)}
-			>
+			<BlurredModal width="width-1/2" open={openReturnFlights}>
 				{returnFlights && (
 					<div className="flex flex-col gap-4">
 						<h1 className="font-semibold text-2xl p-6">Return Flights</h1>

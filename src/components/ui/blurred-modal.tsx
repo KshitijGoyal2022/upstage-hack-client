@@ -11,12 +11,12 @@ export const BlurredModal = ({
 }: {
 	open?: boolean;
 	children: React.ReactNode;
-	onClose: () => void;
+	onClose?: () => void;
 	width?: string;
 }) => {
 	return (
 		<AnimatePresence mode="wait">
-			{open && (
+			{open && onClose && (
 				<button
 					onClick={onClose}
 					className="fixed top-4 right-4 text-black dark:text-white z-[120]"
