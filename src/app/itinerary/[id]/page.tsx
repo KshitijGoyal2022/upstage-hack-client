@@ -61,6 +61,7 @@ export function MultiStepLoaderDemo(props: {
 				loadingStates={loadingStates}
 				loading={props.loading}
 				duration={5000}
+				loop={false}
 			/>
 
 			{/* The buttons are for demo only, remove it in your actual code ⬇️ */}
