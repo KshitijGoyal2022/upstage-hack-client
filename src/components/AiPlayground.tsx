@@ -202,8 +202,6 @@ export default function AiPlayground(props: {
 	 * Shopping areas
 	 */
 
-	console.log(viewRef);
-
 	return (
 		<div className="col-span-7 h-full flex flex-col">
 			<div
@@ -295,7 +293,8 @@ export default function AiPlayground(props: {
 											return (
 												<div key={activity.title}>
 													<p>
-														{activity.title} - {activity.rating}
+														{activity.title} - {activity.rating} (
+														{activity.reviews})
 													</p>
 													<p>
 														{activity.description} - {activity.price}
