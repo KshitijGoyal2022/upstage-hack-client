@@ -402,9 +402,9 @@ export default function AiPlayground(props: {
 										</h1>
 										<div className="px-8 flex flex-row gap-8 overflow-x-auto pb-8">
 											{groupIntoPairs(chat.restaurant_search.local_results).map(
-												(pair) => {
+												(pair, index) => {
 													return (
-														<div className="space-y-8">
+														<div className="space-y-8" key={index}>
 															{pair.map((restaurant) => {
 																const selected =
 																	props.itinerary?.g_restaurants?.find(
@@ -414,6 +414,7 @@ export default function AiPlayground(props: {
 																	);
 																return (
 																	<RestaurantCard
+																		key={restaurant.restaurant_id}
 																		selected={selected}
 																		restaurant={restaurant}
 																		onSelect={(restaurant) => {
