@@ -7,6 +7,23 @@ import {
 	GooglePlacesResult,
 } from "./types/serp";
 
+const getReturnFlights = async (params: {
+	departure_id: string;
+	arrival_id: string;
+	departure_token: string;
+	outbound_date: string;
+	return_date: string;
+}) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/return-flights`,
+		{
+			params,
+		}
+	);
+
+	return response.data;
+};
+
 const saveOutboundFlight = async (
 	itineraryId: string,
 	flight: GoogleFlightData["best_flights"][number]
@@ -193,6 +210,7 @@ const deleteGoogleEvents = async (itineraryId: string, eventsId: string) => {
 };
 
 export const googleApi = {
+	getReturnFlights,
 	saveOutboundFlight,
 	saveReturnFlight,
 	saveHotel,

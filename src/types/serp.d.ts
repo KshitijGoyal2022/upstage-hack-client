@@ -187,6 +187,7 @@ interface GoogleEventsResult {
 }
 
 export interface GoogleFlightData {
+	id: string;
 	search_metadata: SearchMetadata;
 	search_parameters: SearchParameters;
 	best_flights: {
