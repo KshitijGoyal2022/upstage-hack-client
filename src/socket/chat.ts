@@ -3,14 +3,26 @@
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { FlightOffer$1 } from "@/types/amadeus";
 import { PointsOfInterest } from "@/types/mapbox";
+import {
+	GoogleEventsResult,
+	GoogleFlightData,
+	GoogleFoodResponse,
+	GoogleHotels,
+	GooglePlacesResult,
+	SerpFlight,
+} from "@/types/serp";
 /**
  * Chat socket implementation
  */
 
-import React, { useEffect, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
-export const useChat = (socket: Socket) => {
+export const useChat = (
+	id: string,
+	socket: Socket,
+	viewRef: RefObject<HTMLDivElement>
+) => {
 	const [chats, setChats] = useState<ChatPayload[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -21,6 +33,10 @@ export const useChat = (socket: Socket) => {
 	useEffect(() => {
 		socket.on("chat", (data: ChatPayload) => {
 			setChats((prev) => [...prev, data]);
+			// scroll to bottom
+			if (viewRef.current) {
+				viewRef.current.scrollTop = viewRef.current.scrollHeight;
+			}
 		});
 
 		socket.on("chat:loading", (loading: boolean) => {
@@ -38,9 +54,12 @@ export const useChat = (socket: Socket) => {
 	const sendChat = React.useCallback(
 		(value: string) => {
 			console.log("SENDING CHAT", value);
-			socket.emit("chat", value);
+			socket.emit("chat", {
+				id,
+				value,
+			});
 		},
-		[socket]
+		[socket, id]
 	);
 
 	return React.useMemo(
@@ -71,8 +90,10 @@ export interface AmadeusHotelOffer {
 export type AmadeusActivityOffer = PointsOfInterest;
 
 interface ChatPayload {
-	flight_offer_search: AmadeusFlightOffer[];
-	list_hotels_in_city: AmadeusHotelOffer[];
-	points_of_interest: AmadeusActivityOffer[];
+	flight_offer_search: GoogleFlightData;
+	hotel_search: GoogleHotels;
+	restaurant_search: GoogleFoodResponse;
+	event_search: GoogleEventsResult;
+	places_search: GooglePlacesResult;
 	title: string;
 }

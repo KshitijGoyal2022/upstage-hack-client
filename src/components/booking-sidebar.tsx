@@ -23,7 +23,7 @@ const bookings = [
 	},
 ];
 
-const BookingsSidebar = () => {
+const BookingsSidebar = ({ onSelect, selected }) => {
 	const { user, isAuthenticated, isLoading } = useAuth0();
 	const { bookings } = useMyBookings();
 	//   const { bookings, loading } = useMyBookings(); // Fetch user's bookings
@@ -37,19 +37,21 @@ const BookingsSidebar = () => {
 			<ul className="space-y-2">
 				{bookings.map((booking, index) => (
 					<li key={booking._id}>
-						<Link href={`/booking/${booking.booking.referenceId}`} passHref>
-							<Button
-								variant="ghost"
-								className="w-full flex items-center justify-start gap-2 rounded-lg p-2 text-gray-800 hover:bg-muted"
-							>
-								<Avatar className="h-8 w-8 bg-green-100">
-									<AvatarFallback>
-										{booking.booking.referenceId[0]}
-									</AvatarFallback>
-								</Avatar>
-								<span className="truncate">{booking.booking.referenceId}</span>
-							</Button>
-						</Link>
+						<Button
+							variant="ghost"
+							onClick={() => onSelect(booking?.booking?.referenceId)}
+							className={
+								"w-full flex items-center justify-start gap-2 rounded-lg p-2 text-gray-800 hover:bg-muted" +
+								(selected === booking?.booking?.referenceId ? " bg-muted" : "")
+							}
+						>
+							<Avatar className="h-8 w-8 bg-green-100">
+								<AvatarFallback>
+									{booking.booking.referenceId[0]}
+								</AvatarFallback>
+							</Avatar>
+							<span className="truncate">{booking.booking.referenceId}</span>
+						</Button>
 					</li>
 				))}
 			</ul>

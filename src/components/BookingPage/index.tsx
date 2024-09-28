@@ -1,10 +1,8 @@
 "use client";
 import { FlightCard } from "@/components/renders/RenderFlights";
-import { HotelCard } from "@/components/renders/RenderHotels";
 import RenderPOIMap from "@/components/renders/RenderPOIMap";
 import { ActivityCard } from "@/components/renders/RenderPointOfInterests";
 import { useBooking } from "@/useBooking";
-import { useItinerary } from "@/useItinerary";
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
 
@@ -137,6 +135,7 @@ function BookingPage({ params }: any) {
 							isAdmin={isAdmin}
 							isSelected
 							currency={flightOffer?.currency || "USD"}
+							onPress={() => {}}
 						/>
 					</div>
 				)}

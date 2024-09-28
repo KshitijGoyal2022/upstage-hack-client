@@ -125,10 +125,15 @@ function PreviewPage({ params }: any) {
 
 	return (
 		<div className="flex flex-row  m-12 gap-8">
-			{flightOffer?.id && (
+			{flightOffer && (
 				<div>
 					<h2 className="text-2xl font-semibold mb-4">Your Flights</h2>
-					<FlightCard flight={flightOffer} isAdmin={isAdmin} isSelected />
+					<FlightCard
+						flight={flightOffer}
+						isAdmin={isAdmin}
+						isSelected
+						currency={flightOffer?.currency || "USD"}
+					/>
 				</div>
 			)}
 

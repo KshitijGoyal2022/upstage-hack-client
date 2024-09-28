@@ -2,7 +2,7 @@
 
 import { socket } from "@/socket";
 import { useChat } from "@/socket/chat";
-import React from "react";
+import React, { act, useRef } from "react";
 import { FlightCard, FlightSkeleton } from "./renders/RenderFlights";
 
 import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
@@ -16,14 +16,22 @@ import {
 	TooltipTrigger,
 	TooltipProvider,
 } from "@/components/ui/tooltip";
-import { HotelCard } from "./renders/RenderHotels";
-import { ActivityCard } from "./renders/RenderPointOfInterests";
-import RenderPOIMap from "./renders/RenderPOIMap";
-import { Skeleton } from "@/components/ui/skeleton";
-import RenderHotelMap from "./renders/RenderHotelMap";
+
 import { saveActivity, saveFlight, saveHotel } from "@/apis";
 import { useAuth0 } from "@auth0/auth0-react";
 import { generateFlightOfferUniqueId } from "@/helpers";
+import Image from "next/image";
+import HotelCard from "./render/HotelCard";
+import RestaurantCard from "./render/RestaurantCard";
+import {
+	GoogleEventsResult,
+	GoogleFlightData,
+	GoogleFoodResult,
+	GoogleHotelProperty,
+	GooglePlacesResult,
+} from "@/types/serp";
+import { googleApi } from "@/google_api";
+import Itinerary from "@/app/itinerary/[id]/page";
 
 export const hotel_tags_set = new Set([
 	"lodging",
@@ -38,6 +46,16 @@ export const hotel_tags_set = new Set([
 	"mountain_hut",
 ]);
 
+function groupIntoPairs(arr: any[]) {
+	let result = [];
+
+	for (let i = 0; i < arr.length; i += 2) {
+		result.push([arr[i], arr[i + 1]]);
+	}
+
+	return result;
+}
+
 export default function AiPlayground(props: {
 	itineraryId: string;
 	itinerary: any;
@@ -46,8 +64,14 @@ export default function AiPlayground(props: {
 	const { user } = useAuth0();
 	const [message, setMessage] = React.useState("");
 
-	const chat = useChat(socket);
-	console.log(chat);
+	const viewRef = useRef<HTMLDivElement>(null);
+
+	const [returnFlights, setReturnFlights] =
+		React.useState<GoogleFlightData | null>(null);
+	const [returnFlightsLoading, setReturnFlightsLoading] =
+		React.useState<boolean>(false);
+
+	const chat = useChat(props.itineraryId, socket, viewRef);
 
 	const callbackSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -55,53 +79,199 @@ export default function AiPlayground(props: {
 		setMessage("");
 	};
 
-	const callbackSaveFlight = async (flight: any) => {
-		await saveFlight(flight, props.itineraryId);
-		props?.onRefreshItinerary();
-	};
-	const callbackSaveHotel = async (hotel: any) => {
-		await saveHotel(hotel, props.itineraryId);
+	const callbackSaveFlight = async (
+		flight: GoogleFlightData["best_flights"][number],
+		date: string
+	) => {
+		await googleApi.saveOutboundFlight(props.itineraryId, flight, date);
 		props?.onRefreshItinerary();
 	};
 
-	const callbackSaveActivity = async (activity: any) => {
-		await saveActivity(activity, props.itineraryId);
+	const callbackSaveRestaurant = async (restaurant: GoogleFoodResult) => {
+		await googleApi.saveGoogleRestaurant(props.itineraryId, restaurant);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveRestaurant = async (restaurant: GoogleFoodResult) => {
+		await googleApi.deleteGoogleRestaurant(props.itineraryId, restaurant.title);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveHotel = async (hotel: GoogleHotelProperty) => {
+		await googleApi.saveHotel(props.itineraryId, hotel);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveHotel = async (hotel: GoogleHotelProperty) => {
+		await googleApi.deleteGoogleHotel(props.itineraryId, hotel.property_token);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveTopSights = async (
+		topSights: GooglePlacesResult["top_sights"]["sights"][number]
+	) => {
+		await googleApi.saveTopSights(props.itineraryId, topSights);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveTopSights = async (
+		topSights: GooglePlacesResult["top_sights"]["sights"][number]
+	) => {
+		await googleApi.deleteGoogleTopSights(props.itineraryId, topSights.title);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveLocalResults = async (
+		localResults: GooglePlacesResult["local_results"]["places"][number]
+	) => {
+		await googleApi.saveLocalResults(props.itineraryId, localResults);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveLocalResults = async (
+		localResults: GooglePlacesResult["local_results"]["places"][number]
+	) => {
+		await googleApi.deleteGoogleLocalResults(
+			props.itineraryId,
+			localResults.place_id
+		);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveShoppingResults = async (
+		shoppingResults: GooglePlacesResult["shopping_results"][number]
+	) => {
+		await googleApi.saveGoogleShopping(props.itineraryId, shoppingResults);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveShoppingResults = async (
+		shoppingResults: GooglePlacesResult["shopping_results"][number]
+	) => {
+		await googleApi.deleteGoogleShopping(
+			props.itineraryId,
+			shoppingResults.title
+		);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackSaveEvent = async (
+		event: GoogleEventsResult["events_results"][number]
+	) => {
+		await googleApi.saveGoogleEvents(props.itineraryId, event);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackRemoveEvent = async (
+		event: GoogleEventsResult["events_results"][number]
+	) => {
+		await googleApi.deleteGoogleEvents(props.itineraryId, event.title);
+		props?.onRefreshItinerary();
+	};
+
+	const callbackGetReturnFlights = async (params: {
+		departure_id: string;
+		arrival_id: string;
+		departure_token: string;
+		outbound_date: string;
+		return_date: string;
+	}) => {
+		setReturnFlightsLoading(true);
+		const response = await googleApi.getReturnFlights(params);
+		setReturnFlights(response);
+		setReturnFlightsLoading(false);
+	};
+
+	const callbackSaveReturnFlight = async (
+		flight: GoogleFlightData["best_flights"][number],
+		date: string
+	) => {
+		await googleApi.saveReturnFlight(props.itineraryId, flight, date);
 		props?.onRefreshItinerary();
 	};
 
 	const isAdmin = props.itinerary?.admin?.provider?.id === user?.sub;
-	const selectedActivitiesMapboxIds = new Set([
-		...props.itinerary.activities.map(
-			(activity) => activity?.properties?.mapbox_id
-		),
-		...props.itinerary.hotels.map((hotel) => hotel?.properties?.mapbox_id),
-	]);
-	const flightId = generateFlightOfferUniqueId(props?.itinerary?.flight);
 
-	console.log(props.itinerary?.admin?.provider?.id === user?.sub);
+	/**
+	 * Flight
+	 * Hotels x
+	 * Top Sights
+	 * Events
+	 * Restaurants x
+	 * Activities
+	 * Shopping areas
+	 */
 
 	return (
 		<div className="col-span-7 h-full flex flex-col">
-			<div className="flex-1 overflow-y-auto p-4 space-y-8 min-h-[650px] max-h-[650px]">
+			<div
+				className="flex-1 overflow-y-auto  space-y-8 min-h-[650px] max-h-[800px]"
+				ref={viewRef}
+			>
 				{chat.chats.length > 0 &&
 					chat.chats.map((chat, index) => {
+						const plans = [
+							...(chat.flight_offer_search?.best_flights || []),
+							...(chat.flight_offer_search?.other_flights || []),
+						];
 						return (
 							<div key={index} className="space-y-8">
-								{(chat.flight_offer_search?.length > 0 && (
+								{(plans.length > 0 && (
 									<div>
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
-											{chat.flight_offer_search?.map((flight) => {
-												const currentFlightId =
-													generateFlightOfferUniqueId(flight);
+											{plans?.map((flight, index) => {
 												return (
 													<FlightCard
 														flight={flight}
-														key={flight.id}
+														key={flight?.id}
 														isAdmin={isAdmin}
-														isSelected={currentFlightId === flightId}
-														onPress={() => callbackSaveFlight(flight)}
+														isSelected={
+															flight?.id === props.itinerary?.g_flights?.[0]?.id
+														}
+														currency={
+															chat.flight_offer_search.search_parameters
+																?.currency || "USD"
+														}
+														onPress={() => {
+															callbackSaveFlight(
+																{
+																	...flight,
+																	currency:
+																		chat.flight_offer_search.search_parameters
+																			?.currency || "USD",
+																},
+																chat.flight_offer_search.search_parameters
+																	?.outbound_date
+															);
+
+															// fetch return flights
+															if (
+																chat.flight_offer_search?.search_parameters
+																	?.return_date &&
+																flight.departure_token
+															)
+																callbackGetReturnFlights(
+																	{
+																		departure_id:
+																			chat.flight_offer_search
+																				?.search_parameters?.departure_id,
+																		arrival_id:
+																			chat.flight_offer_search
+																				?.search_parameters?.arrival_id,
+																		departure_token: flight.departure_token,
+																		outbound_date:
+																			chat.flight_offer_search
+																				?.search_parameters?.outbound_date,
+																		return_date:
+																			chat.flight_offer_search
+																				?.search_parameters?.return_date,
+																	},
+																	chat.flight_offer_search.search_parameters
+																		?.return_date
+																);
+														}}
 													/>
 												);
 											})}
@@ -113,68 +283,233 @@ export default function AiPlayground(props: {
 											Sorry, we could not find any flights
 										</p>
 									))}
-								{(chat.list_hotels_in_city && (
+
+								{chat.places_search?.top_sights && (
+									<div>
+										{chat.places_search.top_sights?.sights?.map((activity) => {
+											const selected = props.itinerary?.g_top_sights?.find(
+												(h) => h.title === activity.title
+											);
+											return (
+												<div key={activity.title}>
+													<p>
+														{activity.title} - {activity.rating} (
+														{activity.reviews})
+													</p>
+													<p>
+														{activity.description} - {activity.price}
+													</p>
+													<Image
+														src={activity.thumbnail}
+														alt={activity.title}
+														width={70}
+														height={70}
+													/>
+													<Button
+														onClick={() =>
+															selected
+																? callbackRemoveTopSights(activity)
+																: callbackSaveTopSights(activity)
+														}
+													>
+														{selected ? "Remove" : "Add"}
+													</Button>
+												</div>
+											);
+										})}
+									</div>
+								)}
+								{/**show me some upcoming events in vancouver */}
+								{chat?.event_search?.events_results && (
 									<div>
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
-										<RenderHotelMap hotels={chat.list_hotels_in_city} />
 										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
-											{chat.list_hotels_in_city?.map((hotel) => {
+											{chat?.event_search?.events_results?.map((event) => {
+												const selected = props.itinerary?.g_events?.find(
+													(h) => h.title === event.title
+												);
 												return (
-													<HotelCard
-														hotel={hotel}
-														key={hotel.hotelId}
-														isAdmin={isAdmin}
-														onPress={() => callbackSaveHotel(hotel)}
-													/>
+													<div key={event.title}>
+														<p>
+															{event.title} - {event.date.start_date} -{" "}
+															{event.date.when}
+														</p>
+														<p>{event.description}</p>
+														<p>
+															<a href={event.ticket_info[0].link}>
+																{event.ticket_info[0].source}
+															</a>
+														</p>
+														<Image
+															src={event.thumbnail}
+															alt={event.title}
+															width={70}
+															height={70}
+														/>
+														<Image
+															src={event.event_location_map.image}
+															alt={event.title}
+															width={70}
+															height={70}
+														/>
+														<Button
+															onClick={() =>
+																selected
+																	? callbackRemoveEvent(event)
+																	: callbackSaveEvent(event)
+															}
+														>
+															{selected ? "Remove" : "Add"}
+														</Button>
+													</div>
 												);
 											})}
 										</div>
 									</div>
-								)) ||
-									(chat.list_hotels_in_city === null && (
-										<p className="text-center">
-											Sorry, we could not find any hotel
-										</p>
-									))}
-
-								{(chat.points_of_interest && (
+								)}
+								{/**show me some hotels to stay in new york from 20 october 2024, to 30 october 2024 */}
+								{chat.hotel_search?.properties && (
 									<div>
-										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
-										<RenderPOIMap activities={chat.points_of_interest} />
-
-										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
-											{chat.points_of_interest?.map((place) => {
-												const mapboxId = place.properties.mapbox_id;
-												const isSelected =
-													selectedActivitiesMapboxIds.has(mapboxId);
+										<h1 className="font-semibold text-2xl p-6">
+											{chat.title.replaceAll('"', "")}
+										</h1>
+										<div className="flex flex-row overflow-x-auto gap-6 pb-12 px-8">
+											{chat.hotel_search.properties.map((hotel) => {
+												const selected = props.itinerary?.g_hotels?.find(
+													(h) => h.property_token === hotel.property_token
+												);
 												return (
-													<ActivityCard
-														activity={place}
-														key={place.properties.mapbox_id}
-														isAdmin={isAdmin}
-														isSelected={isSelected}
-														onPress={() => {
-															if (
-																place.properties.poi_category.some((tag) =>
-																	hotel_tags_set.has(tag)
-																)
-															) {
-																callbackSaveHotel(place);
-															} else {
-																callbackSaveActivity(place);
-															}
+													<HotelCard
+														hotel={hotel}
+														selected={selected}
+														key={hotel.property_token}
+														onSelect={(hotel) => {
+															selected
+																? callbackRemoveHotel(hotel)
+																: callbackSaveHotel(hotel);
 														}}
 													/>
 												);
 											})}
 										</div>
 									</div>
-								)) ||
-									(chat.points_of_interest === null && (
-										<p className="text-center">
-											Sorry, we could not find any result.
-										</p>
-									))}
+								)}
+								{/**show me some restaurants in new york */}
+								{chat.restaurant_search?.local_results && (
+									<div>
+										<h1 className="font-semibold text-2xl p-6">
+											{chat.title.replaceAll('"', "")}
+										</h1>
+										<div className="px-8 flex flex-row gap-8 overflow-x-auto pb-8">
+											{groupIntoPairs(chat.restaurant_search.local_results).map(
+												(pair) => {
+													return (
+														<div className="space-y-8">
+															{pair.map((restaurant) => {
+																const selected =
+																	props.itinerary?.g_restaurants?.find(
+																		(h) =>
+																			h.restaurant_id ===
+																			restaurant.restaurant_id
+																	);
+																return (
+																	<RestaurantCard
+																		selected={selected}
+																		restaurant={restaurant}
+																		onSelect={(restaurant) => {
+																			selected
+																				? callbackRemoveRestaurant(restaurant)
+																				: callbackSaveRestaurant(restaurant);
+																		}}
+																	/>
+																);
+															})}
+														</div>
+													);
+												}
+											)}
+										</div>
+									</div>
+								)}
+								{/**show me some museums in milan*/}
+								{chat.places_search?.shopping_results && (
+									<div>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
+										{chat?.places_search?.shopping_results?.map((activity) => {
+											const selected = props.itinerary?.g_shopping?.find(
+												(h) => h.title === activity.title
+											);
+											return (
+												<div key={activity.title}>
+													<p>
+														{activity.title} - {activity.rating}{" "}
+														{activity.rating}
+													</p>
+													<p>{activity.price}</p>
+													<Image
+														src={activity.thumbnail}
+														alt={activity.title}
+														width={70}
+														height={70}
+													/>
+													<a href={activity.link}>buy</a>
+
+													<Button
+														onClick={() =>
+															selected
+																? callbackRemoveShoppingResults(activity)
+																: callbackSaveShoppingResults(activity)
+														}
+													>
+														{selected ? "Remove" : "Add"}
+													</Button>
+												</div>
+											);
+										})}
+									</div>
+								)}
+
+								{/** local results places  sinc as : shopping malls in milan */}
+								{chat.places_search?.local_results?.places && (
+									<div>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
+										{chat.places_search.local_results?.places?.map(
+											(activity) => {
+												const selected = props.itinerary?.g_local_results?.find(
+													(h) => h.place_id === activity.place_id
+												);
+												return (
+													<div key={activity.place_id}>
+														<p>
+															{activity.title} - {activity.rating}{" "}
+															{activity.rating}
+														</p>
+														<p>{activity.description}</p>
+														<p>{activity.address}</p>
+														{/** Contains coordinates */}
+														<p>{activity.hours}</p>
+														<p>{activity.type}</p>
+														<Image
+															src={activity.thumbnail}
+															alt={activity.title}
+															width={70}
+															height={70}
+														/>
+														<Button
+															onClick={() =>
+																selected
+																	? callbackRemoveLocalResults(activity)
+																	: callbackSaveLocalResults(activity)
+															}
+														>
+															{selected ? "Remove" : "Add"}
+														</Button>
+													</div>
+												);
+											}
+										)}
+									</div>
+								)}
 							</div>
 						);
 					})}
