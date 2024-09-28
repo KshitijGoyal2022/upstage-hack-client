@@ -26,12 +26,14 @@ const getReturnFlights = async (params: {
 
 const saveOutboundFlight = async (
 	itineraryId: string,
-	flight: GoogleFlightData["best_flights"][number]
+	flight: GoogleFlightData["best_flights"][number],
+	date: string
 ) => {
 	const response = await axios.post(
 		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/outbound-flight`,
 		{
 			flight,
+			date,
 		}
 	);
 
@@ -40,12 +42,14 @@ const saveOutboundFlight = async (
 
 const saveReturnFlight = async (
 	itineraryId: string,
-	flight: GoogleFlightData["best_flights"][number]
+	flight: GoogleFlightData["best_flights"][number],
+	date: string
 ) => {
 	const response = await axios.post(
 		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/google/return-flight`,
 		{
 			flight,
+			date,
 		}
 	);
 

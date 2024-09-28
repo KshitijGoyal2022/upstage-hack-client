@@ -41,6 +41,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@react-three/fiber": "^8.17.8",
+    "@tabler/icons-react": "^3.19.0",
     "airlines-iata-codes": "^1.0.1",
     "airport-codes": "^1.0.2",
     "antd": "^5.21.1",

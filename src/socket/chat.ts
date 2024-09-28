@@ -15,10 +15,14 @@ import {
  * Chat socket implementation
  */
 
-import React, { useEffect, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
-export const useChat = (id: string, socket: Socket) => {
+export const useChat = (
+	id: string,
+	socket: Socket,
+	viewRef: RefObject<HTMLDivElement>
+) => {
 	const [chats, setChats] = useState<ChatPayload[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,6 +33,10 @@ export const useChat = (id: string, socket: Socket) => {
 	useEffect(() => {
 		socket.on("chat", (data: ChatPayload) => {
 			setChats((prev) => [...prev, data]);
+			// scroll to bottom
+			if (viewRef.current) {
+				viewRef.current.scrollTop = viewRef.current.scrollHeight;
+			}
 		});
 
 		socket.on("chat:loading", (loading: boolean) => {

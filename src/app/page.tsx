@@ -43,7 +43,7 @@ export function FlipWordsDemo() {
 			<div className="text-5xl mx-auto font-bold text-neutral-600 dark:text-neutral-400 text-center">
 				Build your itinerary
 				<br />
-				<FlipWords className="mt-5 text-8xl" words={words} />
+				<FlipWords className="mt-5 text-9xl" words={words} />
 			</div>
 		</div>
 	);

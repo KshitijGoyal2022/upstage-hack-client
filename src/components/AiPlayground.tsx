@@ -2,7 +2,7 @@
 
 import { socket } from "@/socket";
 import { useChat } from "@/socket/chat";
-import React, { act } from "react";
+import React, { act, useRef } from "react";
 import { FlightCard, FlightSkeleton } from "./renders/RenderFlights";
 
 import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
@@ -64,13 +64,14 @@ export default function AiPlayground(props: {
 	const { user } = useAuth0();
 	const [message, setMessage] = React.useState("");
 
+	const viewRef = useRef<HTMLDivElement>(null);
+
 	const [returnFlights, setReturnFlights] =
 		React.useState<GoogleFlightData | null>(null);
 	const [returnFlightsLoading, setReturnFlightsLoading] =
 		React.useState<boolean>(false);
 
-	const chat = useChat(props.itineraryId, socket);
-	console.log(chat);
+	const chat = useChat(props.itineraryId, socket, viewRef);
 
 	const callbackSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -79,9 +80,10 @@ export default function AiPlayground(props: {
 	};
 
 	const callbackSaveFlight = async (
-		flight: GoogleFlightData["best_flights"][number]
+		flight: GoogleFlightData["best_flights"][number],
+		date: string
 	) => {
-		await googleApi.saveOutboundFlight(props.itineraryId, flight);
+		await googleApi.saveOutboundFlight(props.itineraryId, flight, date);
 		props?.onRefreshItinerary();
 	};
 
@@ -181,9 +183,10 @@ export default function AiPlayground(props: {
 	};
 
 	const callbackSaveReturnFlight = async (
-		flight: GoogleFlightData["best_flights"][number]
+		flight: GoogleFlightData["best_flights"][number],
+		date: string
 	) => {
-		await googleApi.saveReturnFlight(props.itineraryId, flight);
+		await googleApi.saveReturnFlight(props.itineraryId, flight, date);
 		props?.onRefreshItinerary();
 	};
 
@@ -199,9 +202,14 @@ export default function AiPlayground(props: {
 	 * Shopping areas
 	 */
 
+	console.log(viewRef);
+
 	return (
 		<div className="col-span-7 h-full flex flex-col">
-			<div className="flex-1 overflow-y-auto  space-y-8 min-h-[650px] max-h-[800px]">
+			<div
+				className="flex-1 overflow-y-auto  space-y-8 min-h-[650px] max-h-[800px]"
+				ref={viewRef}
+			>
 				{chat.chats.length > 0 &&
 					chat.chats.map((chat, index) => {
 						const plans = [
@@ -228,14 +236,44 @@ export default function AiPlayground(props: {
 															chat.flight_offer_search.search_parameters
 																?.currency || "USD"
 														}
-														onPress={() =>
-															callbackSaveFlight({
-																...flight,
-																currency:
+														onPress={() => {
+															callbackSaveFlight(
+																{
+																	...flight,
+																	currency:
+																		chat.flight_offer_search.search_parameters
+																			?.currency || "USD",
+																},
+																chat.flight_offer_search.search_parameters
+																	?.outbound_date
+															);
+
+															// fetch return flights
+															if (
+																chat.flight_offer_search?.search_parameters
+																	?.return_date &&
+																flight.departure_token
+															)
+																callbackGetReturnFlights(
+																	{
+																		departure_id:
+																			chat.flight_offer_search
+																				?.search_parameters?.departure_id,
+																		arrival_id:
+																			chat.flight_offer_search
+																				?.search_parameters?.arrival_id,
+																		departure_token: flight.departure_token,
+																		outbound_date:
+																			chat.flight_offer_search
+																				?.search_parameters?.outbound_date,
+																		return_date:
+																			chat.flight_offer_search
+																				?.search_parameters?.return_date,
+																	},
 																	chat.flight_offer_search.search_parameters
-																		?.currency || "USD",
-															})
-														}
+																		?.return_date
+																);
+														}}
 													/>
 												);
 											})}
@@ -397,6 +435,7 @@ export default function AiPlayground(props: {
 								{/**show me some museums in milan*/}
 								{chat.places_search?.shopping_results && (
 									<div>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 										{chat?.places_search?.shopping_results?.map((activity) => {
 											const selected = props.itinerary?.g_shopping?.find(
 												(h) => h.title === activity.title
@@ -434,6 +473,7 @@ export default function AiPlayground(props: {
 								{/** local results places  sinc as : shopping malls in milan */}
 								{chat.places_search?.local_results?.places && (
 									<div>
+										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 										{chat.places_search.local_results?.places?.map(
 											(activity) => {
 												const selected = props.itinerary?.g_local_results?.find(

@@ -194,3 +194,11 @@ export const bookItinerary = async (itineraryId: string) => {
 
 	return response.data;
 };
+
+export const getMagicItinerary = async (itineraryId: string) => {
+	const response = await axios.get(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/itinerary/${itineraryId}/magic`
+	);
+
+	return response.data?.itinerary;
+};
