@@ -139,7 +139,7 @@ export default function ItineraryRender(props: {
 																	</p>
 																</div>
 															</div>
-															{flight.layovers.length > index && (
+															{flight?.layovers?.length > index && (
 																<>
 																	<div className=" grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
 																		<div className="flex flex-col items-center">
@@ -244,7 +244,7 @@ export default function ItineraryRender(props: {
 												<p className="text-sm text-slate-500 mb-2">Hotel</p>
 												<p className="text-slate-700 text-sm">
 													{event.start_time} to {event.end_time} @ Check-in:{" "}
-													{hotel.check_in_time}
+													{hotel?.check_in_time}
 												</p>
 												<p className="text-slate-700 text-sm">
 													Price: {hotel?.rate_per_night?.lowest} / night

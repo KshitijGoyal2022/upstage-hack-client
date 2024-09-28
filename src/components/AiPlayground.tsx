@@ -212,6 +212,8 @@ export default function AiPlayground(props: {
 
 	const isAdmin = props.itinerary?.admin?.provider?.id === user?.sub;
 
+	console.log(chat);
+
 	/**
 	 * Flight
 	 * Hotels x
@@ -467,15 +469,16 @@ export default function AiPlayground(props: {
 													return (
 														<div className="space-y-8" key={index}>
 															{pair.map((restaurant) => {
+																if (!restaurant) return null;
 																const selected =
 																	props.itinerary?.g_restaurants?.find(
 																		(h) =>
 																			h.restaurant_id ===
-																			restaurant.restaurant_id
+																			restaurant?.restaurant_id
 																	);
 																return (
 																	<RestaurantCard
-																		key={restaurant.restaurant_id}
+																		key={restaurant?.restaurant_id}
 																		selected={selected}
 																		restaurant={restaurant}
 																		onSelect={(restaurant) => {

@@ -83,7 +83,7 @@ export default function HotelCard(props: {
 						</div>
 						<div>
 							<div className="text-sm text-center mb-2 font-medium text-slate-700">
-								{hotel.rate_per_night.lowest} / night
+								{hotel.rate_per_night?.lowest} / night
 							</div>
 							<div
 								onClick={() => props.onSelect(hotel)}
