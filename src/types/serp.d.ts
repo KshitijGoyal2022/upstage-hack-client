@@ -438,7 +438,7 @@ export interface GooglePlacesResult {
 		time_taken_displayed: number;
 		organic_results_state: string;
 	};
-	top_sights?: {
+	top_sights: {
 		sights: {
 			title: string;
 			description: string;
@@ -449,8 +449,8 @@ export interface GooglePlacesResult {
 			thumbnail: string;
 		}[];
 	};
-	local_results?: {
-		places?: {
+	local_results: {
+		places: {
 			position: number;
 			rating: number;
 			reviews_original: string;
