@@ -38,7 +38,8 @@ const findRestaurant = (restaurant_id: string, wholeItinerary: any) => {
 
 const findHotel = (property_token: string, wholeItinerary: any) => {
 	const hotel = wholeItinerary?.g_hotels?.find(
-		(hotel: any) => hotel.property_token === property_token
+		(hotel: any) =>
+			hotel.property_token === property_token || hotel.name === property_token
 	);
 	return hotel;
 };
@@ -296,6 +297,7 @@ export default function ItineraryRender(props: {
 										event.id,
 										props.wholeItinerary
 									) as GoogleHotelProperty;
+									console.log(hotel);
 									c++;
 
 									return (
