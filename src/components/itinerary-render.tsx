@@ -168,6 +168,86 @@ export default function ItineraryRender(props: {
 											</div>
 										</div>
 									);
+								} else if (event.type === "g_return_flight") {
+									const flight = findFlight(
+										event.id,
+										props.wholeItinerary
+									) as GoogleFlightData["best_flights"][0];
+
+									return (
+										<div key={flight?.id}>
+											{/* <p>{event.type}</p> */}
+
+											<div className="flex flex-col gap-8">
+												{flight?.flights?.map((f, index) => {
+													c++;
+													return (
+														<>
+															<div
+																key={f.airline}
+																className="flex flex-row gap-4"
+															>
+																<Image
+																	src={f.airline_logo}
+																	width={60}
+																	height={60}
+																	objectFit="cover"
+																	alt="restaurant"
+																	className="w-[72px] h-[72px] rounded-md"
+																/>
+																<div className="flex flex-col items-center gap-2">
+																	<div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-400">
+																		<p className="text-sm">{c}</p>
+																	</div>
+																	<div className="w-[2px] h-8 bg-slate-300"></div>
+																</div>
+																<div className="-mt-1.5">
+																	<h1 className="font-bold text-lg">
+																		{f.departure_airport?.name} -{" "}
+																		{f.arrival_airport?.name}{" "}
+																	</h1>
+																	<p className="text-sm text-slate-500 mb-2">
+																		Flight
+																	</p>
+																	<p className="text-slate-700 text-sm">
+																		{f.departure_airport?.time} -{" "}
+																		{f.arrival_airport?.time}
+																	</p>
+																	<p className="text-slate-700 text-sm">
+																		Duration:{" "}
+																		{millisecondsToDuration(f.duration)}
+																	</p>
+																</div>
+															</div>
+															{flight?.layovers?.length > index && (
+																<>
+																	<div className=" grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+																		<div className="flex flex-col items-center">
+																			<span className="flex h-2 w-2 translate-y-1 rounded-full bg-black" />
+																			{/** Line to bottom */}
+
+																			<div className="h-full mt-3 w-0.5 bg-black"></div>
+																		</div>
+																		<div className="space-y-1">
+																			<p className="text-sm font-medium leading-none">
+																				Layover at {flight.layovers[index].name}
+																			</p>
+																			<p className="text-sm text-muted-foreground">
+																				Duration:{" "}
+																				{millisecondsToDuration(
+																					flight.layovers[index].duration
+																				)}
+																			</p>
+																		</div>
+																	</div>
+																</>
+															)}
+														</>
+													);
+												})}
+											</div>
+										</div>
+									);
 								} else if (event.type === "g_restaurants" && event.id) {
 									const restaurant = findRestaurant(
 										event.id,
