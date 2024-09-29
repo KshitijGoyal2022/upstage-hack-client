@@ -47,7 +47,7 @@ export function millisecondsToDuration(minutes: number) {
 
 	// Format the hours, minutes, and seconds to always have two digits
 	const formattedHours = String(hours).padStart(2, "0");
-	const formattedMinutes = String((minutes % hours) * 60).padStart(2, "0");
+	const formattedMinutes = String(minutes % 60).padStart(2, "");
 
 	// Combine them into the HH:MM:SS format
 	return `${formattedHours}h ${formattedMinutes}min`;

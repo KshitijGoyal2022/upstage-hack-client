@@ -125,7 +125,7 @@ export function FlightCard({
 								<div className="w-0.5 h-6 my-4 border border-dashed border-black  self-center" />
 							)}
 
-							{props.flight.layovers.length > index && (
+							{props.flight?.layovers?.length > index && (
 								<>
 									<div className=" grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
 										<div className="flex flex-col items-center">
