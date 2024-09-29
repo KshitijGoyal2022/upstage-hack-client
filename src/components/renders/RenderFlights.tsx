@@ -237,7 +237,7 @@ export function FlightCard({
 												<Briefcase className="mr-2 text-yellow-500" />
 												Seat Class: {flight.travel_class}
 											</p>
-											{props.flight.layovers.length > index && (
+											{props.flight.layovers?.length > index && (
 												<p className="flex items-center text-gray-600">
 													<Timer className="mr-2 text-red-500" />
 													Layover at {

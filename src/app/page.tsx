@@ -36,14 +36,14 @@ export function AuroraBackgroundDemo(props) {
 import { FlipWords } from "../components/ui/flip-words";
 
 export function FlipWordsDemo() {
-	const words = ["with ease", "your way", "better", "effortlessly"];
+	const words = ["seamlessly", "with confidence", "on the go", "stress-free"];
 
 	return (
 		<div className="flex justify-center items-center px-4">
-			<div className="text-5xl mx-auto font-bold text-neutral-600 dark:text-neutral-400 text-center">
+			<div className="text-8xl mx-auto font-bold text-neutral-600 dark:text-neutral-400 text-center">
 				Build your itinerary
 				<br />
-				<FlipWords className="mt-5 text-9xl" words={words} />
+				<FlipWords className="mt-5 text-8xl" words={words} />
 			</div>
 		</div>
 	);
@@ -67,7 +67,7 @@ export default function Home() {
 	return (
 		<AuroraBackgroundDemo>
 			<FlipWordsDemo />
-			<div className="flex justify-center items-center mt-40 p-4">
+			<div className="flex justify-center items-center mt-10 p-4">
 				<div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
 					<div
 						className="w-full md:w-[400px] flex flex-col p-6 md:p-10 rounded-lg border shadow-slate-100 shadow-xl"

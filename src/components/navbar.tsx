@@ -22,18 +22,18 @@ export default function Navbar() {
 			}
 		>
 			<div>
-				<Link href="/" className="flex items-center">
+				<Link href="/" className="flex items-center ml-5">
 					<Image
-						src="/logo.png"
+						src="/logo.svg"
 						alt="Travel Application Logo"
-						width={60}
-						height={60}
+						width={40}
+						height={40}
 						className="rounded-full"
 					/>
-					<h1 className="font-bold text-2xl">Traventure</h1>
+					<h1 className="font-bold text-2xl ml-5">Itinerar</h1>
 				</Link>
 			</div>
-			<div className="self-center">
+			<div className="self-center mr-5">
 				{!isAuthenticated && <LoginButton />}
 				{isAuthenticated && <Profile />}
 			</div>

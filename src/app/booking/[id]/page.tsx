@@ -1,4 +1,6 @@
 "use client";
+import { MagicButton } from "@/app/itinerary/[id]/page";
+import ItineraryRender from "@/components/itinerary-render";
 import HotelCard from "@/components/render/HotelCard";
 import RestaurantCard from "@/components/render/RestaurantCard";
 import { FlightCard } from "@/components/renders/RenderFlights";
@@ -61,7 +63,7 @@ export const restaurant_tags_set = new Set([
 function BookingPage({ params }: any) {
 	const { user, isLoading: authLoading } = useAuth0();
 	const { id } = params;
-
+	const [open, setOpen] = React.useState(false);
 	const { booking, isLoading } = useBooking(id);
 	if (authLoading) {
 		return (
@@ -128,8 +130,13 @@ function BookingPage({ params }: any) {
 
 	return (
 		<div className="m-12">
-			<div className="text-4xl font-bold text-center mb-20">
-				Flight Booking Reference: {booking?.booking?.referenceId}
+			<div className="flex flex-col items-center mb-20">
+				<div className="text-4xl font-bold text-center mb-4">
+					Flight Booking Reference: {booking?.booking?.referenceId}
+				</div>
+				<button onClick={() => setOpen(true)}>
+					<MagicButton text="Check Itinerary" />
+				</button>
 			</div>
 			<div className="flex flex-row gap-8">
 				{itinerary?.g_flights?.[0] && (
@@ -402,6 +409,12 @@ function BookingPage({ params }: any) {
 					</div>
 				)}
 			</div>
+			<ItineraryRender
+				open={!!itinerary?.magic && open}
+				itinerary={itinerary?.magic}
+				onClose={() => setOpen(false)}
+				wholeItinerary={itinerary}
+			/>
 		</div>
 	);
 }

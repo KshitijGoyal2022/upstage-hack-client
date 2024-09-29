@@ -55,7 +55,7 @@ const TranslationChat: React.FC = () => {
       {/* Floating Action Button */}
       {!isOpen && (
         <Button
-          className='fixed bottom-6 left-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full p-4 w-12 h-12 shadow-lg hover:scale-105 transform transition-transform duration-300 ease-in-out focus:outline-none'
+          className='fixed bottom-6 left-6 bg-indigo-500  text-white rounded-full p-4 w-12 h-12 shadow-lg hover:scale-105 transform transition-transform duration-300 ease-in-out focus:outline-none'
           onClick={toggleChat}
         >
           💬
