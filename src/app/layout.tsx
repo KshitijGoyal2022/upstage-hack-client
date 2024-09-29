@@ -16,7 +16,7 @@ import { FloatButton } from "antd";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Traventure",
+	title: "Itinerar",
 	description: "Ready, set, go anywhere!",
 };
 
@@ -29,7 +29,7 @@ export default function RootLayout({
 		<html lang="en">
 			<Head>
 				{/* If you're using another file format like .png or .svg */}
-				<link rel="icon" href="/favicon.png" type="image/png" />
+				<link rel="icon" href="/favicon.ico" type="image/x-icon" />
 			</Head>
 			<body className={inter.className}>
 				<AuthProvider>

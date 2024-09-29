@@ -23,7 +23,7 @@ export function ShareModal({ shareLink }: { shareLink: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='w-40'>Share</Button>
+        <Button className='rounded-full'>+</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
