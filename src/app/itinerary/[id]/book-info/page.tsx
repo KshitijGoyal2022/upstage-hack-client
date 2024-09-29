@@ -23,6 +23,11 @@ import { useItinerary } from "@/useItinerary";
 import Link from "next/link";
 import DropArea from "@/components/ant/DropArea";
 import { message } from "antd";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+	`${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
+);
 
 export function DatePicker({ date, setDate }) {
 	return (
@@ -200,7 +205,31 @@ const PassportForm = ({ params }) => {
 		});
 	};
 
-	console.log(passportData);
+	const callbackPayment = React.useCallback(async () => {
+		// Fetch the session ID from your backend
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_SERVER_URL}/stripe/create-checkout-session`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ itineraryId: id }),
+			}
+		);
+		const { sessionId } = await response.json();
+
+		const stripe = await stripePromise;
+
+		// Redirect to the Stripe Checkout page
+		const { error } = await stripe?.redirectToCheckout({
+			sessionId,
+		});
+
+		if (error) {
+			console.error("Error redirecting to checkout:", error);
+		}
+	}, [id]);
 
 	if (authLoading) {
 		return (
@@ -472,11 +501,12 @@ const PassportForm = ({ params }) => {
 				<Button className="py-6 mt-10 rounded-full" onClick={handleSave}>
 					Save Details
 				</Button>
-				<Link href={`/itinerary/${id}/pricing`} passHref>
-					<Button className="py-6 rounded-full w-full bg-transparent border text-block hover:bg-slate-100">
-						Go to Pricing
-					</Button>
-				</Link>
+				<Button
+					onClick={callbackPayment}
+					className="py-6 rounded-full w-full bg-transparent border text-block hover:bg-slate-100"
+				>
+					Go to Pricing
+				</Button>
 			</div>
 		</form>
 	);
