@@ -282,7 +282,7 @@ export default function AiPlayground(props: {
 									<div>
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 
-										<div className="flex flex-row overflow-x-auto gap-4 px-6 ">
+										<div className="flex flex-col overflow-x-auto gap-4 px-6 ">
 											{plans?.map((flight, index) => {
 												return (
 													<FlightCard
