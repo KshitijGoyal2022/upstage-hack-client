@@ -1,6 +1,19 @@
-# Traventure
+Sure! Here is an updated **README** that reflects the switch from Mapbox to SerpAPI for place recommendations and flights.
 
-**Traventure** is a state-of-the-art travel application designed to revolutionize how you plan, book, and manage your trips. Whether you're traveling solo or with a group, Traventure provides an all-in-one platform for creating and managing detailed itineraries, booking accommodations and flights, and even handling communication in multiple languages. Leveraging AI-powered assistance and advanced APIs, Traventure simplifies every aspect of your travel experience, allowing you to focus on the journey itself.
+---
+
+# Combined Repository
+
+This repository contains two submodules:
+
+- [Server/API](https://github.com/shardaishwak/upstage-hack-api): Click here to go directly to the First Project repository for the API.
+- [Client NextJS](https://github.com/KshitijGoyal2022/upstage-hack-client): Click here to go directly to the Second Project repository for the Client.
+
+---
+
+# Itinerar
+
+**Itinerar** is a state-of-the-art travel application designed to revolutionize how you plan, book, and manage your trips. Whether you're traveling solo or with a group, **Itinerar** provides an all-in-one platform for creating and managing detailed itineraries, booking accommodations and flights, and even handling communication in multiple languages. Leveraging AI-powered assistance and advanced APIs, **Itinerar** simplifies every aspect of your travel experience, allowing you to focus on the journey itself.
 
 ## Table of Contents
 
@@ -11,22 +24,22 @@
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Architecture](#architecture)
+- [Team Members](#team-members)
 
 ## Features
 
 - **User Authentication:** Secure and seamless authentication using Auth0.
 - **Itinerary Management:** Effortlessly create, view, and manage personal or group travel itineraries.
 - **Booking Management:** Manage bookings for flights, hotels, and activities, all in one place.
-- **Passport Information Extraction:** Use Upstage's Document OCR technology to extract and autofill passport details, speeding up the booking process.
-- **AI-Powered Travel Assistance:** Engage with Upstage's Chat AI and Upstage's Function Calling to receive tailored recommendations for flights, accommodations, and tourist attractions.
-- **Multi-language Translation:** Real-time translation between English and Korean to assist with communication during your travels using Upstage's Translation API.
-- **Interactive Maps:** Discover places to visit, hotels, restaurants, and entertainment using Mapbox-powered interactive maps.
+- **Passport Information Extraction:** Use OCR technology to extract and autofill passport details, speeding up the booking process.
+- **AI-Powered Travel Assistance:** Engage with AI to receive tailored recommendations for flights, accommodations, and tourist attractions.
+- **Multi-language Translation:** Real-time translation between English and Korean to assist with communication during your travels.
 - **Real-time Group Communication:** Users can create groups for itineraries and communicate with each other live using **Socket.io**, making trip planning collaborative and more efficient.
-- **Seamless Integration:** Connects with multiple APIs, including Amadeus for flight information, Mapbox for place recommendations, restaurants, hotels and more.
+- **Seamless Integration:** Connects with multiple APIs, including SerpAPI for flight information and place recommendations, Amadeus for flight booking, and more.
 
 ## Getting Started
 
-To get started with Traventure, follow the instructions below.
+To get started with **Itinerar**, follow the instructions below.
 
 ### Prerequisites
 
@@ -54,11 +67,12 @@ Ensure you have the following installed:
     - **Function Calling API:** Enables AI to retrieve real-time data about travel options by calling relevant APIs.
     - **Document OCR API:** Extracts passport and other travel document details to facilitate booking processes.
     - **Translation API:** Provides real-time translation between English and Korean.
+  - **SerpAPI:** Used for flight search, and place recommendations, replacing Mapbox.
   - **Amadeus Travel APIs:** Integrates flight search and booking functionalities.
-  - **Mapbox API:** Powers the interactive maps for place recommendations, hotels, restaurants, entertainment, and more.
 - **Other:**
   - Multer for file uploads
   - Axios for making HTTP requests
+  - Stripe for handling payments
 
 ## Installation
 
@@ -121,22 +135,18 @@ Your client application should now be running on `http://localhost:3000`, and yo
 
 - **English-Korean Translation:** The Translation API facilitates real-time translation between English and Korean, making communication easier when traveling.
 
-### Interactive Maps
+### Flight Search and Booking with SerpAPI and Amadeus
 
-- **Explore with Mapbox:** Discover and explore places to visit, hotels, restaurants, and entertainment using Mapbox-powered interactive maps integrated directly into the app.
-
-  - **Place Recommendations:** Utilize Mapbox’s extensive geolocation data to find and explore nearby places of interest, including tourist attractions, restaurants, and entertainment venues.
-  - **Hotel Search:** Search for and view hotels in your destination area with Mapbox’s detailed map features, including filters for price range, star ratings, and user reviews.
-  - **Route Planning:** Plan your routes within the city, whether by foot, car, or public transportation, with Mapbox’s interactive mapping and direction services.
-
-### Flight Search and Booking with Amadeus
-
-- **Flight Search:** Seamlessly search for flights using the Amadeus Travel APIs, which provide comprehensive flight options based on your criteria such as destination, departure date, and number of passengers.
+- **Flight Search:** Seamlessly search for flights using the **SerpAPI** for flight options based on your criteria, such as destination, departure date, and number of passengers.
   
   - **Filtering Options:** Narrow down your search by airline, flight duration, number of stops, and price range.
   - **Real-Time Availability:** Get real-time flight availability and pricing to make informed booking decisions.
 
-- **Booking Integration:** Directly book your selected flights through the application, with integration to Amadeus’s booking API, ensuring that your booking is secure and confirmed.
+- **Booking Integration:** Directly book your selected flights through the application, with integration to **Amadeus’s** booking API, ensuring that your booking is secure and confirmed.
+
+### Place Recommendations Using SerpAPI
+
+- **Place Recommendations:** Discover popular tourist attractions, restaurants, and entertainment venues near your destination using **SerpAPI**'s place recommendation feature.
 
 ## API Endpoints
 
@@ -161,7 +171,16 @@ Your client application should now be running on `http://localhost:3000`, and yo
 
 ## Architecture
 
-![Architecture Diagram](./public/architecture.svg)
+![Architecture Diagram](/architecture.svg)
 
-For more detailed architecture planning and collaboration, visit our planning on [Excalidraw](https://excalidraw.com/#json=93V_lfHaprhUdDNqZ7hDo,bnOxTCY-qhXxyI7t2NkL_g).
+For more detailed architecture planning and collaboration, visit our planning on [Excalidraw](https://excalidraw.com/#json=fI2JVSLspgTbyyHLzAM0i,8dq7we4K8f4h-kubCYzU8Q).
 
+## Team Members
+
+- **Kshitij Goyal (Full Stack Developer)** - [kshitijgoyal7@gmail.com](mailto:kshitijgoyal7@gmail.com)
+- **Ishwak Sharda (Lead Full Stack Developer)** - [ishwak.sharda@gmail.com](mailto:ishwak.sharda@gmail.com)
+- **Sarah Kim (UX/UI Designer)** - [llastkim@gmail.com](mailto:llastkim@gmail.com)
+
+---
+
+This updated README now reflects your use of **SerpAPI** for both flight search and place recommendations, while still integrating **Amadeus** for booking. Let me know if you need any further adjustments!
