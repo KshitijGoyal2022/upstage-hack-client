@@ -363,7 +363,7 @@ export default function AiPlayground(props: {
                       {chat.places_search.top_sights?.sights?.map(
                         (activity) => {
                           const selected = props.itinerary?.g_top_sights?.find(
-                            (h) => h.title === activity.title
+                            (h:any) => h.title === activity.title
                           );
 
                           return (
@@ -463,7 +463,7 @@ export default function AiPlayground(props: {
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                       {chat?.event_search?.events_results?.map((event) => {
                         const selected = props.itinerary?.g_events?.find(
-                          (h) => h.title === event.title
+                          (h:any) => h.title === event.title
                         );
 
                         return (
