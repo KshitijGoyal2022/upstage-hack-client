@@ -15,7 +15,7 @@ export default function RestaurantCard(props: {
 				props.selected ? "bg-slate-100" : "bg-white"
 			)}
 			style={{ flex: "0 0 auto" }}
-			onClick={() => props.onSelect(restaurant)}
+			onClick={() => props.onSelect && props.onSelect(restaurant)}
 		>
 			<Image
 				src={restaurant.images[0]}

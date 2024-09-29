@@ -282,7 +282,7 @@ export default function AiPlayground(props: {
 									<div>
 										<h1 className="font-semibold text-2xl p-6">{chat.title}</h1>
 
-										<div className="flex flex-row overflow-x-auto gap-4 px-6">
+										<div className="flex flex-col overflow-x-auto gap-4 px-6">
 											{plans?.map((flight, index) => {
 												return (
 													<FlightCard
@@ -345,7 +345,7 @@ export default function AiPlayground(props: {
 								{chat.places_search?.top_sights && (
 									<div className="p-6">
 										<h1 className="font-semibold text-3xl mb-6 text-gray-800">
-											Explore Top Sights
+											{chat.title.replaceAll('"', "")}
 										</h1>
 
 										<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -438,7 +438,7 @@ export default function AiPlayground(props: {
 								{chat?.event_search?.events_results && (
 									<div className="p-6">
 										<h1 className="font-semibold text-3xl mb-6 text-gray-800">
-											Upcoming Events
+											{chat.title.replaceAll('"', "")}
 										</h1>
 
 										<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -585,7 +585,7 @@ export default function AiPlayground(props: {
 								{chat.places_search?.local_results?.places && (
 									<div className="p-6">
 										<h1 className="font-semibold text-3xl mb-6 text-gray-800">
-											Explore Local Places
+											{chat.title.replaceAll('"', "")}
 										</h1>
 
 										<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -621,7 +621,7 @@ export default function AiPlayground(props: {
 																</h2>
 																<p className="font-semibold text-lg text-gray-700">
 																	{activity.price
-																		? `$${activity.price}`
+																		? `${activity.price}`
 																		: "Free"}
 																</p>
 
@@ -671,7 +671,7 @@ export default function AiPlayground(props: {
 								{chat.places_search?.shopping_results && (
 									<div className="p-6">
 										<h1 className="font-semibold text-3xl mb-6 text-gray-800">
-											Shopping in Milan
+											{chat.title.replaceAll('"', "")}
 										</h1>
 
 										<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -706,7 +706,7 @@ export default function AiPlayground(props: {
 																</h2>
 																<p className="font-semibold text-lg text-gray-700">
 																	{activity.price
-																		? `$${activity.price}`
+																		? `${activity.price}`
 																		: "Free"}
 																</p>
 
@@ -790,7 +790,7 @@ export default function AiPlayground(props: {
 
 															{/* Price */}
 															<p className="font-semibold text-lg mt-2 text-gray-700">
-																{activity.price ? `$${activity.price}` : "Free"}
+																{activity.price ? `${activity.price}` : "Free"}
 															</p>
 
 															{/* Provider Name */}

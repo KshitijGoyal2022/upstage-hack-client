@@ -212,7 +212,7 @@ const Itinerary = ({ params }: any) => {
 			{/* Main Content - Group AI Playground */}
 			<div className="col-span-7">
 				<h2 className="mt-2 text-xl font-semibold p-4 flex justify-center">
-					Group AI Playground
+					AI Playground
 				</h2>
 				<AiPlayground
 					itineraryId={id}
