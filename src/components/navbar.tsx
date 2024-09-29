@@ -24,13 +24,12 @@ export default function Navbar() {
 			<div>
 				<Link href="/" className="flex items-center">
 					<Image
-						src="/logo.png"
+						src="/logo.svg"
 						alt="Travel Application Logo"
-						width={60}
-						height={60}
+						width={40}
+						height={40}
 						className="rounded-full"
 					/>
-					<h1 className="font-bold text-2xl">Traventure</h1>
 				</Link>
 			</div>
 			<div className="self-center">
