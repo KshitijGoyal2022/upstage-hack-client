@@ -283,31 +283,31 @@ export default function AiPlayground(props: {
                   <div>
                     <h1 className='font-semibold text-2xl p-6'>{chat.title}</h1>
 
-                    <div className='flex flex-row overflow-x-auto gap-4 px-6 '>
-                      {plans?.map((flight, index) => {
-                        return (
-                          <FlightCard
-                            flight={flight}
-                            key={flight?.id}
-                            isAdmin={isAdmin}
-                            isSelected={
-                              flight?.id === props.itinerary?.g_flights?.[0]?.id
-                            }
-                            currency={
-                              chat.flight_offer_search.search_parameters
-                                ?.currency || 'USD'
-                            }
-                            onPress={() => {
-                              callbackSaveFlight(
-                                {
-                                  ...flight,
-                                  currency:
-                                    chat.flight_offer_search.search_parameters
-                                      ?.currency || 'USD',
-                                },
-                                chat.flight_offer_search.search_parameters
-                                  ?.outbound_date
-                              );
+										<div className="flex flex-col overflow-x-auto gap-4 px-6">
+											{plans?.map((flight, index) => {
+												return (
+													<FlightCard
+														flight={flight}
+														key={flight?.id}
+														isAdmin={isAdmin}
+														isSelected={
+															flight?.id === props.itinerary?.g_flights?.[0]?.id
+														}
+														currency={
+															chat.flight_offer_search.search_parameters
+																?.currency || "USD"
+														}
+														onPress={() => {
+															callbackSaveFlight(
+																{
+																	...flight,
+																	currency:
+																		chat.flight_offer_search.search_parameters
+																			?.currency || "USD",
+																},
+																chat.flight_offer_search.search_parameters
+																	?.outbound_date
+															);
 
                               // fetch return flights
                               if (
@@ -641,12 +641,12 @@ export default function AiPlayground(props: {
                   </div>
                 )}
 
-                {/**show me some museums in milan*/}
-                {chat.places_search?.shopping_results && (
-                  <div className='p-6'>
-                    <h1 className='font-semibold text-3xl mb-6 text-gray-800'>
-                      Shopping in Milan
-                    </h1>
+								{/**show me some museums in milan*/}
+								{chat.places_search?.shopping_results && (
+									<div className="p-6">
+										<h1 className="font-semibold text-3xl mb-6 text-gray-800">
+											{chat.title.replaceAll('"', "")}
+										</h1>
 
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                       {chat?.places_search?.shopping_results?.map(

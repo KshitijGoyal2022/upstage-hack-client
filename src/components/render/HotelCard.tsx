@@ -30,8 +30,8 @@ export default function HotelCard(props: {
 							{hotel.description}
 						</h2>
 						<h2 className="font-normal my-4 text-xs text-zinc-500">
-							{hotel.nearby_places.slice(0, 1).map((place) => (
-								<div className="flex gap-2 items-center">
+							{hotel?.nearby_places?.slice(0, 1).map((place) => (
+								<div className="flex gap-2 items-center" key={place?.name}>
 									<svg
 										width="15"
 										height="15"
@@ -85,12 +85,14 @@ export default function HotelCard(props: {
 							<div className="text-sm text-center mb-2 font-medium text-slate-700">
 								{hotel.rate_per_night?.lowest} / night
 							</div>
-							<div
-								onClick={() => props.onSelect(hotel)}
-								className="relative cursor-pointer z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs"
-							>
-								{props.selected ? "Remove" : "Select"}
-							</div>
+							{props.onSelect && (
+								<div
+									onClick={() => props.onSelect(hotel)}
+									className="relative cursor-pointer z-10 px-6 py-2 bg-black text-white font-bold rounded-xl block text-xs"
+								>
+									{props.selected ? "Remove" : "Select"}
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
