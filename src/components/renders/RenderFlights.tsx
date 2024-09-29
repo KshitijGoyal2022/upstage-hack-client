@@ -84,7 +84,7 @@ export function FlightCard({
 									minute: "2-digit",
 								})}
 							</p>
-							<p className="text-sm text-muted-foreground">YVR</p>
+							<p className="text-sm text-muted-foreground">{from}</p>
 							<p className="text-lg font-semibold">–</p>
 							<p className="text-lg font-semibold">
 								{new Date(
@@ -96,7 +96,7 @@ export function FlightCard({
 									minute: "2-digit",
 								})}
 							</p>
-							<p className="text-sm text-muted-foreground">RUH</p>
+							<p className="text-sm text-muted-foreground">{to}</p>
 						</div>
 
 						{/* Stops and Duration */}
@@ -125,7 +125,7 @@ export function FlightCard({
 					{props.isAdmin && props.onPress && (
 						<Button
 							onClick={handleFlightSelection}
-							className="mt-2 bg-indigo-500 text-white hover:bg-indigo-600"
+							className="mt-2 bg-gray-800 text-white hover:bg-gray-900"
 							disabled={props.isSelected}
 						>
 							{props.isSelected ? "Selected" : "Select"}
@@ -138,7 +138,7 @@ export function FlightCard({
 
 			{isOpen && (
 				<div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ease-in-out">
-					<div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl transform transition-all duration-300 p-10 space-y-8">
+					<div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl transform transition-all duration-300 p-10 space-y-8 max-h-[950px] overflow-y-auto">
 						{/* Modal Header */}
 						<div className="flex items-center justify-between space-x-4">
 							<div>
@@ -270,7 +270,7 @@ export function FlightCard({
 							{props.onPress && (
 								<Button
 									onClick={handleFlightSelection}
-									className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-md shadow-lg transform transition-transform hover:scale-105"
+									className="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-md shadow-lg transform transition-transform hover:scale-105"
 									disabled={props.isSelected}
 								>
 									{props.isSelected ? "Selected" : "Select Flight"}
