@@ -57,7 +57,7 @@ export function FlightCard({
 			{/* Clickable Flight Card */}
 			<Card
 				className={cn(
-					"w-[600px] p-6 border rounded-lg shadow-sm hover:shadow-lg cursor-pointer flex justify-between items-center",
+					"w-full p-6 border rounded-lg shadow-sm hover:shadow-lg cursor-pointer flex justify-between items-center",
 					className
 				)}
 				onClick={openDialog} // Clicking anywhere opens the modal
@@ -122,7 +122,7 @@ export function FlightCard({
 					<p className="font-bold text-xl">
 						{currencyFormatter(props.currency).format(props.flight.price)}
 					</p>
-					{props.isAdmin && (
+					{props.isAdmin && props.onPress && (
 						<Button
 							onClick={handleFlightSelection}
 							className="mt-2 bg-indigo-500 text-white hover:bg-indigo-600"
@@ -267,13 +267,15 @@ export function FlightCard({
 							>
 								Close
 							</Button>
-							<Button
-								onClick={handleFlightSelection}
-								className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-md shadow-lg transform transition-transform hover:scale-105"
-								disabled={props.isSelected}
-							>
-								{props.isSelected ? "Selected" : "Select Flight"}
-							</Button>
+							{props.onPress && (
+								<Button
+									onClick={handleFlightSelection}
+									className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-md shadow-lg transform transition-transform hover:scale-105"
+									disabled={props.isSelected}
+								>
+									{props.isSelected ? "Selected" : "Select Flight"}
+								</Button>
+							)}
 						</div>
 					</div>
 				</div>
