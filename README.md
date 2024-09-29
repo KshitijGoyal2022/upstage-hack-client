@@ -1,7 +1,3 @@
-Sure! Here is an updated **README** that reflects the switch from Mapbox to SerpAPI for place recommendations and flights.
-
----
-
 # Combined Repository
 
 This repository contains two submodules:
